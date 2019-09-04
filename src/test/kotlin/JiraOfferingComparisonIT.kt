@@ -8,6 +8,7 @@ import com.atlassian.performance.tools.aws.api.Aws
 import com.atlassian.performance.tools.aws.api.DependentResources
 import com.atlassian.performance.tools.aws.api.Investment
 import com.atlassian.performance.tools.aws.api.SshKeyFormula
+import com.atlassian.performance.tools.awsinfrastructure.api.network.NetworkFormula
 import com.atlassian.performance.tools.awsinfrastructure.api.virtualusers.MulticastVirtualUsersFormula
 import com.atlassian.performance.tools.awsinfrastructure.api.virtualusers.ProvisionedVirtualUsers
 import com.atlassian.performance.tools.infrastructure.api.virtualusers.DirectResultsTransport
@@ -88,16 +89,22 @@ class JiraOfferingComparisonIT {
             prefix = nonce,
             lifespan = Duration.ofMinutes(30)
         ).provision()
+        val investment = Investment(
+            useCase = "Compare Jira Cloud vs DC",
+            lifespan = Duration.ofMinutes(30)
+        )
+        val network = NetworkFormula(
+            investment = investment,
+            aws = aws
+        ).provision()
         val (virtualUsers, vuResource) = MulticastVirtualUsersFormula.Builder(
             nodes = 6,
             shadowJar = dereference("jpt.virtual-users.shadow-jar")
         )
+            .network(network)
             .build()
             .provision(
-                investment = Investment(
-                    useCase = "Compare Jira Cloud vs DC",
-                    lifespan = Duration.ofMinutes(30)
-                ),
+                investment = investment,
                 shadowJarTransport = aws.virtualUsersStorage(nonce),
                 resultsTransport = DirectResultsTransport(resultsTarget),
                 roleProfile = aws.shortTermStorageAccess(),
