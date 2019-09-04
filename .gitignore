@@ -1,2 +1,3 @@
 .gradle
 build/
+jira-cloud.properties

@@ -22,6 +22,7 @@ import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserBehavi
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserTarget
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
 import org.junit.Test
+import java.io.File
 import java.net.URI
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -49,17 +50,23 @@ class JiraOfferingComparisonIT {
         val cloudResult = benchmark(
             cohort = "Cloud",
             options = VirtualUserOptions(
-                target = VirtualUserTarget(
-                    webApplication = URI("https://quick303.atlassian.net/"),
-                    userName = "does not matter",
-                    password = "does not matter"
-                ),
+                target = loadCloudTarget(),
                 behavior = VirtualUserBehavior.Builder(JiraSoftwareScenario::class.java).build()
             )
         )
         FullReport().dump(
             results = listOf(cloudResult, dcResult).map { it.prepareForJudgement(FullTimeline()) },
             workspace = workspace.isolateTest("Compare")
+        )
+    }
+
+    private fun loadCloudTarget(): VirtualUserTarget {
+        val jiraCloud = Properties()
+        File("jira-cloud.properties").bufferedReader().use { jiraCloud.load(it) }
+        return VirtualUserTarget(
+            webApplication = URI(jiraCloud.getProperty("jira.uri")!!),
+            userName = jiraCloud.getProperty("user.name")!!,
+            password = jiraCloud.getProperty("user.password")!!
         )
     }
 
