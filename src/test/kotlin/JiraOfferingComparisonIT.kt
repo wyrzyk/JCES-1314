@@ -36,17 +36,6 @@ class JiraOfferingComparisonIT {
 
     @Test
     fun shouldCompareCloudWithDc() {
-        val dcResult = benchmark(
-            cohort = "DC",
-            options = VirtualUserOptions(
-                target = VirtualUserTarget(
-                    webApplication = URI("http://jpt-9cd95-LoadBala-OIOWU635DYX-397630401.eu-west-1.elb.amazonaws.com/"),
-                    userName = "admin",
-                    password = "admin"
-                ),
-                behavior = VirtualUserBehavior.Builder(JiraSoftwareScenario::class.java).build()
-            )
-        )
         val cloudResult = benchmark(
             cohort = "Cloud",
             options = VirtualUserOptions(
@@ -55,7 +44,7 @@ class JiraOfferingComparisonIT {
             )
         )
         FullReport().dump(
-            results = listOf(cloudResult, dcResult).map { it.prepareForJudgement(FullTimeline()) },
+            results = listOf(cloudResult).map { it.prepareForJudgement(FullTimeline()) },
             workspace = workspace.isolateTest("Compare")
         )
     }
