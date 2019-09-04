@@ -49,7 +49,7 @@ dependencies {
     testCompile("com.atlassian.performance.tools:concurrency:[1.0.0,2.0.0)")
     testCompile("junit:junit:4.12")
     testCompile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.70")
-    val log4jVersion = "2.12.0"
+    val log4jVersion = "2.12.1"
     testCompile("org.apache.logging.log4j:log4j-api:$log4jVersion")
     testCompile("org.apache.logging.log4j:log4j-core:$log4jVersion")
     testRuntime("org.apache.logging.log4j:log4j-slf4j18-impl:$log4jVersion")
@@ -60,6 +60,10 @@ configurations.all {
         failOnVersionConflict()
         activateDependencyLocking()
         resolutionStrategy {
+            dependencySubstitution {
+                substitute(module("org.apache.logging.log4j:log4j-slf4j-impl"))
+                    .with(module("org.apache.logging.log4j:log4j-slf4j18-impl:2.12.1"))
+            }
             eachDependency {
                 when (requested.module.toString()) {
                     "org.slf4j:slf4j-api" -> useVersion("1.8.0-alpha2")
@@ -76,7 +80,7 @@ configurations.all {
                 }
                 when (requested.group) {
                     "org.jetbrains.kotlin" -> useVersion("1.2.70")
-                    "org.apache.logging.log4j" -> useVersion("2.12.0")
+                    "org.apache.logging.log4j" -> useVersion("2.12.1")
                 }
             }
         }

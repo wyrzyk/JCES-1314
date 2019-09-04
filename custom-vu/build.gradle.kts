@@ -20,6 +20,10 @@ configurations.all {
     resolutionStrategy {
         activateDependencyLocking()
         failOnVersionConflict()
+        dependencySubstitution {
+            substitute(module("org.apache.logging.log4j:log4j-slf4j-impl"))
+                .with(module("org.apache.logging.log4j:log4j-slf4j18-impl:2.12.1"))
+        }
         eachDependency {
             when (requested.module.toString()) {
                 "commons-codec:commons-codec" -> useVersion("1.10")
@@ -28,7 +32,7 @@ configurations.all {
             }
             when (requested.group) {
                 "org.jetbrains.kotlin" -> useVersion(kotlinVersion)
-                "org.apache.logging.log4j" -> useVersion("2.12.0")
+                "org.apache.logging.log4j" -> useVersion("2.12.1")
             }
         }
     }
