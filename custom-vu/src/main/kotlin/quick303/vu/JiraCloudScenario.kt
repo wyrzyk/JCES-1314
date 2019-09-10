@@ -15,7 +15,7 @@ class JiraCloudScenario : Scenario {
         meter: ActionMeter,
         userMemory: UserMemory
     ): Action {
-        return JiraCloudLogIn(userMemory, jira.driver)
+        return JiraCloudLogIn(userMemory, jira)
     }
 
     override fun getActions(
