@@ -1,3 +1,4 @@
+import com.atlassian.performance.tools.jiraactions.api.scenario.JiraCoreScenario
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import com.atlassian.performance.tools.report.api.FullReport
 import com.atlassian.performance.tools.report.api.FullTimeline
@@ -5,11 +6,9 @@ import com.atlassian.performance.tools.report.api.result.RawCohortResult
 import com.atlassian.performance.tools.virtualusers.api.VirtualUserOptions
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserTarget
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
-import org.apache.logging.log4j.LogManager
 import org.junit.Test
 import quick303.BenchmarkQuality
 import quick303.QuickAndDirty
-import quick303.SlowAndMeaningful
 import quick303.vu.JiraCloudScenario
 import java.io.File
 import java.net.URI
@@ -25,19 +24,25 @@ class JiraOfferingComparisonIT {
         val benchmarkQuality: BenchmarkQuality = QuickAndDirty()
         val cloudResult = benchmark(
             cohort = "Cloud",
-            target = loadCloudTarget(),
+            target = loadTarget(File("jira-cloud.properties")),
             scenario = JiraCloudScenario::class.java,
             benchmarkQuality = benchmarkQuality
         )
+        val dcResult = benchmark(
+            cohort = "DC",
+            target = loadTarget(File("jira-dc.properties")),
+            scenario = JiraCoreScenario::class.java,
+            benchmarkQuality = benchmarkQuality
+        )
         FullReport().dump(
-            results = listOf(cloudResult).map { it.prepareForJudgement(FullTimeline()) },
+            results = listOf(cloudResult, dcResult).map { it.prepareForJudgement(FullTimeline()) },
             workspace = workspace.isolateTest("Compare")
         )
     }
 
-    private fun loadCloudTarget(): VirtualUserTarget {
+    private fun loadTarget(properties: File): VirtualUserTarget {
         val jiraCloud = Properties()
-        File("jira-cloud.properties").bufferedReader().use { jiraCloud.load(it) }
+        properties.bufferedReader().use { jiraCloud.load(it) }
         return VirtualUserTarget(
             webApplication = URI(jiraCloud.getProperty("jira.uri")!!),
             userName = jiraCloud.getProperty("user.name")!!,

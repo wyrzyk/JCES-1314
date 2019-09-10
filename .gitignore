@@ -1,6 +1,7 @@
 .gradle
 build/
 jira-cloud.properties
+jira-dc.properties
 virtual-users.log
 test-results
 diagnoses
