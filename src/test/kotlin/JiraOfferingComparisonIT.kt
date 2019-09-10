@@ -13,7 +13,6 @@ import com.atlassian.performance.tools.awsinfrastructure.api.virtualusers.Multic
 import com.atlassian.performance.tools.awsinfrastructure.api.virtualusers.ProvisionedVirtualUsers
 import com.atlassian.performance.tools.infrastructure.api.virtualusers.DirectResultsTransport
 import com.atlassian.performance.tools.io.api.dereference
-import com.atlassian.performance.tools.jirasoftwareactions.api.JiraSoftwareScenario
 import com.atlassian.performance.tools.report.api.FullReport
 import com.atlassian.performance.tools.report.api.FullTimeline
 import com.atlassian.performance.tools.report.api.result.RawCohortResult
@@ -22,6 +21,7 @@ import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserBehavi
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserTarget
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
 import org.junit.Test
+import quick303.vu.JiraCloudScenario
 import java.io.File
 import java.net.URI
 import java.nio.file.Path
@@ -40,7 +40,7 @@ class JiraOfferingComparisonIT {
             cohort = "Cloud",
             options = VirtualUserOptions(
                 target = loadCloudTarget(),
-                behavior = VirtualUserBehavior.Builder(JiraSoftwareScenario::class.java).build()
+                behavior = VirtualUserBehavior.Builder(JiraCloudScenario::class.java).build()
             )
         )
         FullReport().dump(

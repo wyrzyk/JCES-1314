@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
 
 val kotlinVersion = "1.2.70"
@@ -10,6 +11,8 @@ plugins {
 
 dependencies {
     implementation("com.atlassian.performance.tools:virtual-users:[3.10.0,4.0.0)")
+    implementation("org.seleniumhq.selenium:selenium-support:3.11.0")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.getByName("shadowJar", ShadowJar::class).apply {
@@ -41,4 +44,13 @@ configurations.all {
 repositories {
     mavenLocal()
     maven(url = URI("https://packages.atlassian.com/maven-external/"))
+    mavenCentral()
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }
