@@ -65,10 +65,13 @@ class JiraOfferingComparisonIT {
     ): RawCohortResult {
         val resultsTarget = workspace.directory.resolve("vu-results").resolve(cohort)
         val (virtualUsers, resource) = prepareVirtualUsers(resultsTarget)
-        try {
+        return try {
             virtualUsers.applyLoad(options)
             virtualUsers.gatherResults()
-            return RawCohortResult.Factory().fullResult(cohort, resultsTarget)
+            RawCohortResult.Factory().fullResult(cohort, resultsTarget)
+        } catch (e: Exception) {
+            virtualUsers.gatherResults()
+            RawCohortResult.Factory().failedResult(cohort, resultsTarget, e)
         } finally {
             resource.release().get()
         }
