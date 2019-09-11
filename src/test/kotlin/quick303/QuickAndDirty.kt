@@ -22,5 +22,6 @@ class QuickAndDirty : BenchmarkQuality {
                 .build()
         )
         .skipSetup(true)
+        .seed(12345L)
         .build()
 }

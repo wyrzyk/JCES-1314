@@ -1,4 +1,4 @@
-package quick303.vu
+package quick303.vu.action
 
 import com.atlassian.performance.tools.jiraactions.api.WebJira
 import com.atlassian.performance.tools.jiraactions.api.action.Action

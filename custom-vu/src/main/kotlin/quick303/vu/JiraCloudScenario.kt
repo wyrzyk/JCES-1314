@@ -2,15 +2,17 @@ package quick303.vu
 
 import com.atlassian.performance.tools.jiraactions.api.SeededRandom
 import com.atlassian.performance.tools.jiraactions.api.WebJira
-import com.atlassian.performance.tools.jiraactions.api.action.*
+import com.atlassian.performance.tools.jiraactions.api.action.Action
+import com.atlassian.performance.tools.jiraactions.api.action.ProjectSummaryAction
+import com.atlassian.performance.tools.jiraactions.api.action.ViewDashboardAction
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveIssueKeyMemory
-import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveIssueMemory
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveJqlMemory
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveProjectMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import com.atlassian.performance.tools.jiraactions.api.scenario.addMultiple
+import quick303.vu.action.*
 
 class JiraCloudScenario : Scenario {
 
@@ -30,25 +32,26 @@ class JiraCloudScenario : Scenario {
         val issueKeyMemory = AdaptiveIssueKeyMemory(seededRandom)
         val projectMemory = AdaptiveProjectMemory(seededRandom)
         val jqlMemory = AdaptiveJqlMemory(seededRandom)
-        val issueMemory = AdaptiveIssueMemory(issueKeyMemory, seededRandom)
+        jqlMemory.remember(listOf("text ~ lorem"))
         val scenario: MutableList<Action> = mutableListOf()
         val createIssue = CreateCloudIssue(
             jira = jira,
             meter = meter,
             projectMemory = projectMemory
         )
-        val searchWithJql = SearchJqlAction(
+        val searchWithJql = SearchCloudJql(
             jira = jira,
             meter = meter,
             jqlMemory = jqlMemory,
             issueKeyMemory = issueKeyMemory
         )
-        val viewIssue = ViewIssueAction(
+        val viewIssue = WorkWithCloudIssue(
             jira = jira,
             meter = meter,
             issueKeyMemory = issueKeyMemory,
-            issueMemory = issueMemory,
-            jqlMemory = jqlMemory
+            random = seededRandom,
+            editProbability = 0.10f,
+            commentProbability = 0.04f
         )
         val projectSummary = ProjectSummaryAction(
             jira = jira,
@@ -58,16 +61,6 @@ class JiraCloudScenario : Scenario {
         val viewDashboard = ViewDashboardAction(
             jira = jira,
             meter = meter
-        )
-        val editIssue = EditIssueAction(
-            jira = jira,
-            meter = meter,
-            issueMemory = issueMemory
-        )
-        val addComment = AddCommentAction(
-            jira = jira,
-            meter = meter,
-            issueMemory = issueMemory
         )
         val browseProjects = BrowseCloudProjects(
             jira = jira,
@@ -81,8 +74,6 @@ class JiraCloudScenario : Scenario {
             viewIssue to 55,
             projectSummary to 5,
             viewDashboard to 10,
-            editIssue to 5,
-            addComment to 2,
             browseProjects to 5
         )
 

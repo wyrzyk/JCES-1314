@@ -2,3 +2,5 @@
 build/
 jira-cloud.properties
 virtual-users.log
+test-results
+diagnoses

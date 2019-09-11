@@ -12,6 +12,7 @@ plugins {
 dependencies {
     implementation("com.atlassian.performance.tools:virtual-users:[3.10.0,4.0.0)")
     implementation("org.seleniumhq.selenium:selenium-support:3.11.0")
+    implementation("org.glassfish:javax.json:1.1")
     implementation(kotlin("stdlib-jdk8"))
 }
 
