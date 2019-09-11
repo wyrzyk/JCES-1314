@@ -32,10 +32,9 @@ class JiraCloudScenario : Scenario {
         val jqlMemory = AdaptiveJqlMemory(seededRandom)
         val issueMemory = AdaptiveIssueMemory(issueKeyMemory, seededRandom)
         val scenario: MutableList<Action> = mutableListOf()
-        val createIssue = CreateIssueAction(
+        val createIssue = CreateCloudIssue(
             jira = jira,
             meter = meter,
-            seededRandom = seededRandom,
             projectMemory = projectMemory
         )
         val searchWithJql = SearchJqlAction(

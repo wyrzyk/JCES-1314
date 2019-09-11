@@ -1,0 +1,67 @@
+package quick303.vu;
+
+import com.atlassian.performance.tools.jiraactions.api.CREATE_ISSUE
+import com.atlassian.performance.tools.jiraactions.api.CREATE_ISSUE_SUBMIT
+import com.atlassian.performance.tools.jiraactions.api.VIEW_DASHBOARD
+import com.atlassian.performance.tools.jiraactions.api.WebJira
+import com.atlassian.performance.tools.jiraactions.api.action.Action
+import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
+import com.atlassian.performance.tools.jiraactions.api.memories.ProjectMemory
+import com.atlassian.performance.tools.jiraactions.api.page.form.IssueForm
+import com.atlassian.performance.tools.jiraactions.api.page.wait
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import org.openqa.selenium.By
+import org.openqa.selenium.JavascriptExecutor
+import org.openqa.selenium.support.ui.ExpectedConditions.*
+import java.time.Duration
+
+class CreateCloudIssue(
+    private val jira: WebJira,
+    private val meter: ActionMeter,
+    private val projectMemory: ProjectMemory
+) : Action {
+    private val logger: Logger = LogManager.getLogger(this::class.java)
+
+    override fun run() {
+        val project = projectMemory.recall()
+        if (project == null) {
+            logger.debug("Skipping Create issue action. I have no knowledge of projects.")
+            return
+        }
+        meter.measure(CREATE_ISSUE) {
+            meter.measure(VIEW_DASHBOARD) {
+                jira.goToDashboard().waitForDashboard()
+            }.apply {
+                dismissAllPopups();
+            }
+            openDialog().fillRequiredFields()
+            meter.measure(CREATE_ISSUE_SUBMIT) {
+                jira.driver.wait(
+                    condition = elementToBeClickable(By.id("create-issue-submit")),
+                    timeout = Duration.ofSeconds(50)
+                ).click()
+                jira.driver.wait(
+                    condition = invisibilityOfElementLocated(By.className("aui-blanket")),
+                    timeout = Duration.ofSeconds(30)
+                )
+            }
+        }
+    }
+
+    private fun openDialog(): IssueForm {
+        val driver = jira.driver
+        driver
+            .wait(
+                condition = elementToBeClickable(By.id("createGlobalItem")),
+                timeout = Duration.ofSeconds(10)
+            )
+            .click()
+        driver.wait(
+            condition = visibilityOfElementLocated(By.id("create-issue-dialog")),
+            timeout = Duration.ofSeconds(30)
+        )
+        (driver as JavascriptExecutor).executeScript("window.onbeforeunload = null")
+        return IssueForm(By.cssSelector("form[name=jiraform]"), driver)
+    }
+}
