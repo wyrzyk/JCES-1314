@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager
 import org.junit.Test
 import quick303.BenchmarkQuality
 import quick303.QuickAndDirty
+import quick303.SlowAndMeaningful
 import quick303.vu.JiraCloudScenario
 import java.io.File
 import java.net.URI
@@ -21,7 +22,7 @@ class JiraOfferingComparisonIT {
 
     @Test
     fun shouldCompareCloudWithDc() {
-        val benchmarkQuality = QuickAndDirty()
+        val benchmarkQuality: BenchmarkQuality = SlowAndMeaningful()
         val cloudResult = benchmark(
             cohort = "Cloud",
             target = loadCloudTarget(),

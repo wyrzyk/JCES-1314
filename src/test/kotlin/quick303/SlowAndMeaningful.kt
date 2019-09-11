@@ -13,6 +13,7 @@ class SlowAndMeaningful : BenchmarkQuality {
         .browser(HeadlessChromeBrowser::class.java)
         .load(
             VirtualUserLoad.Builder()
+                .virtualUsers(72)
                 .flat(Duration.ofMinutes(20))
                 .build()
         )
