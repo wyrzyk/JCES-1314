@@ -17,7 +17,7 @@ class QuickAndDirty : BenchmarkQuality {
         .load(
             VirtualUserLoad.Builder()
                 .ramp(Duration.ZERO)
-                .flat(Duration.ofSeconds(30))
+                .flat(Duration.ofSeconds(100))
                 .virtualUsers(1)
                 .build()
         )

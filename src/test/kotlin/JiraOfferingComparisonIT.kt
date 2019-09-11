@@ -5,6 +5,7 @@ import com.atlassian.performance.tools.report.api.result.RawCohortResult
 import com.atlassian.performance.tools.virtualusers.api.VirtualUserOptions
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserTarget
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
+import org.apache.logging.log4j.LogManager
 import org.junit.Test
 import quick303.BenchmarkQuality
 import quick303.QuickAndDirty
