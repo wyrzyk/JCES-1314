@@ -1,8 +1,6 @@
 package quick303.vu.action
 
-import com.atlassian.performance.tools.jiraactions.api.SeededRandom
-import com.atlassian.performance.tools.jiraactions.api.VIEW_ISSUE
-import com.atlassian.performance.tools.jiraactions.api.WebJira
+import com.atlassian.performance.tools.jiraactions.api.*
 import com.atlassian.performance.tools.jiraactions.api.action.Action
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.IssueKeyMemory
@@ -47,6 +45,14 @@ class WorkWithCloudIssue(
     }
 
     private fun comment(issuePage: CloudIssuePage) {
-        logger.debug("I want to comment on the $issuePage")
+        val commenting = issuePage.comment()
+        meter.measure(ADD_COMMENT) {
+            commenting.openEditor()
+            commenting.typeIn("abc def")
+            meter.measure(ADD_COMMENT_SUBMIT) {
+                commenting.saveComment()
+                commenting.waitForTheNewComment()
+            }
+        }
     }
 }

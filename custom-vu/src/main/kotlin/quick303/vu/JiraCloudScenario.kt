@@ -51,7 +51,7 @@ class JiraCloudScenario : Scenario {
             issueKeyMemory = issueKeyMemory,
             random = seededRandom,
             editProbability = 0.10f,
-            commentProbability = 0.04f
+            commentProbability = 1.00f // 0.04f
         )
         val projectSummary = ProjectSummaryAction(
             jira = jira,

@@ -1,12 +1,11 @@
 package quick303.vu.page
 
 import com.atlassian.performance.tools.jiraactions.api.page.JiraErrors
-import com.atlassian.performance.tools.jiraactions.api.page.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions.or
 import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
-import java.time.Duration
+import quick303.vu.wait
 
 class CloudIssuePage(
     private val driver: WebDriver
@@ -17,8 +16,7 @@ class CloudIssuePage(
     fun waitForSummary(): CloudIssuePage {
         val jiraErrors = JiraErrors(driver)
         driver.wait(
-            timeout = Duration.ofSeconds(10),
-            condition = or(
+            or(
                 visibilityOfElementLocated(bentoSummary),
                 visibilityOfElementLocated(classicSummary),
                 jiraErrors.anyCommonError()
@@ -27,4 +25,16 @@ class CloudIssuePage(
         jiraErrors.assertNoErrors()
         return this
     }
+
+    fun comment(): Commenting {
+        return if (isCommentingClassic()) {
+            ClassicCommenting(driver)
+        } else {
+            BentoCommenting(driver)
+        }
+    }
+
+    private fun isCommentingClassic(): Boolean = driver
+        .findElements(By.id("footer-comment-button"))
+        .isNotEmpty()
 }

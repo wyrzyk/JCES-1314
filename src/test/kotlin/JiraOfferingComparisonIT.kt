@@ -22,7 +22,7 @@ class JiraOfferingComparisonIT {
 
     @Test
     fun shouldCompareCloudWithDc() {
-        val benchmarkQuality: BenchmarkQuality = SlowAndMeaningful()
+        val benchmarkQuality: BenchmarkQuality = QuickAndDirty()
         val cloudResult = benchmark(
             cohort = "Cloud",
             target = loadCloudTarget(),
