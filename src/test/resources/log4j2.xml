@@ -10,7 +10,7 @@
 >
     <Appenders>
         <Appender name="TheConsole" type="Console">
-            <Layout type="PatternLayout" pattern="%d{ABSOLUTE} %highlight{%-5level %msg}%n"/>
+            <Layout type="PatternLayout" pattern="%d{ABSOLUTE} %-5level %x %highlight{%msg}%n"/>
         </Appender>
     </Appenders>
     <Loggers>

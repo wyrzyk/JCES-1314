@@ -1,3 +1,4 @@
+import com.atlassian.performance.tools.concurrency.api.submitWithLogContext
 import com.atlassian.performance.tools.jiraactions.api.scenario.JiraCoreScenario
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import com.atlassian.performance.tools.report.api.FullReport
@@ -14,6 +15,7 @@ import java.io.File
 import java.net.URI
 import java.nio.file.Paths
 import java.util.*
+import java.util.concurrent.Executors
 
 class JiraOfferingComparisonIT {
 
@@ -22,20 +24,25 @@ class JiraOfferingComparisonIT {
     @Test
     fun shouldCompareCloudWithDc() {
         val benchmarkQuality: BenchmarkQuality = QuickAndDirty()
-        val cloudResult = benchmark(
-            cohort = "Cloud",
-            target = loadTarget(File("jira-cloud.properties")),
-            scenario = JiraCloudScenario::class.java,
-            benchmarkQuality = benchmarkQuality
-        )
-        val dcResult = benchmark(
-            cohort = "DC",
-            target = loadTarget(File("jira-dc.properties")),
-            scenario = JiraCoreScenario::class.java,
-            benchmarkQuality = benchmarkQuality
-        )
+        val pool = Executors.newCachedThreadPool()
+        val cloudResult = pool.submitWithLogContext("Cloud") {
+            benchmark(
+                cohort = "Cloud",
+                target = loadTarget(File("jira-cloud.properties")),
+                scenario = JiraCloudScenario::class.java,
+                benchmarkQuality = benchmarkQuality
+            )
+        }
+        val dcResult = pool.submitWithLogContext("DC") {
+            benchmark(
+                cohort = "DC",
+                target = loadTarget(File("jira-dc.properties")),
+                scenario = JiraCoreScenario::class.java,
+                benchmarkQuality = benchmarkQuality
+            )
+        }
         FullReport().dump(
-            results = listOf(cloudResult, dcResult).map { it.prepareForJudgement(FullTimeline()) },
+            results = listOf(cloudResult, dcResult).map { it.get().prepareForJudgement(FullTimeline()) },
             workspace = workspace.isolateTest("Compare")
         )
     }

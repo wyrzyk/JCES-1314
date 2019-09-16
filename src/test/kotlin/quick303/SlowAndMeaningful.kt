@@ -18,5 +18,6 @@ class SlowAndMeaningful : BenchmarkQuality {
                 .build()
         )
         .skipSetup(true)
+        .seed(12345L)
         .build()
 }
