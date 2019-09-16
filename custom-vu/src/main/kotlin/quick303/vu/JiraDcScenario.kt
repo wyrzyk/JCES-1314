@@ -3,7 +3,9 @@ package quick303.vu
 import com.atlassian.performance.tools.jiraactions.api.SeededRandom
 import com.atlassian.performance.tools.jiraactions.api.WebJira
 import com.atlassian.performance.tools.jiraactions.api.action.Action
-import com.atlassian.performance.tools.jiraactions.api.action.EditIssueAction
+import com.atlassian.performance.tools.jiraactions.api.action.BrowseProjectsAction
+import com.atlassian.performance.tools.jiraactions.api.action.CreateIssueAction
+import com.atlassian.performance.tools.jiraactions.api.action.SearchJqlAction
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.JiraCoreScenario
@@ -24,8 +26,25 @@ class JiraDcScenario : Scenario {
         seededRandom: SeededRandom,
         meter: ActionMeter
     ): List<Action> {
-        return JiraCoreScenario()
-            .getActions(jira, seededRandom, meter)
-            .filter { it !is EditIssueAction }
+        val similarities = ScenarioSimilarities(jira, seededRandom, meter)
+        return similarities.assembleScenario(
+            createIssue = CreateIssueAction(
+                jira = jira,
+                meter = meter,
+                projectMemory = similarities.projectMemory,
+                seededRandom = seededRandom
+            ),
+            searchWithJql = SearchJqlAction(
+                jira = jira,
+                meter = meter,
+                jqlMemory = similarities.jqlMemory,
+                issueKeyMemory = similarities.issueKeyMemory
+            ),
+            browseProjects = BrowseProjectsAction(
+                jira = jira,
+                meter = meter,
+                projectMemory = similarities.projectMemory
+            )
+        )
     }
 }

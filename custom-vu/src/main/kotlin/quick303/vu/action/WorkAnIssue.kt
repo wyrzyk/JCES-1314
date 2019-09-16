@@ -8,7 +8,10 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import quick303.vu.page.CloudIssuePage
 
-class WorkWithCloudIssue(
+/**
+ * Works for both Cloud and Data Center.
+ */
+class WorkAnIssue(
     private val jira: WebJira,
     private val meter: ActionMeter,
     private val issueKeyMemory: IssueKeyMemory,
