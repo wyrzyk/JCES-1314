@@ -32,6 +32,7 @@ class JiraCloudScenario : Scenario {
         val issueKeyMemory = AdaptiveIssueKeyMemory(seededRandom)
         val projectMemory = AdaptiveProjectMemory(seededRandom)
         val jqlMemory = AdaptiveJqlMemory(seededRandom)
+        jqlMemory.remember(listOf("order by created DESC")) // work around https://ecosystem.atlassian.net/browse/JPERF-573
         jqlMemory.remember(listOf("text ~ lorem"))
         val scenario: MutableList<Action> = mutableListOf()
         val createIssue = CreateCloudIssue(
