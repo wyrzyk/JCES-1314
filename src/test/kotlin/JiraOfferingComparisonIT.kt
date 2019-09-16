@@ -1,5 +1,4 @@
 import com.atlassian.performance.tools.concurrency.api.submitWithLogContext
-import com.atlassian.performance.tools.jiraactions.api.scenario.JiraCoreScenario
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import com.atlassian.performance.tools.report.api.FullReport
 import com.atlassian.performance.tools.report.api.FullTimeline
@@ -11,6 +10,7 @@ import org.junit.Test
 import quick303.BenchmarkQuality
 import quick303.QuickAndDirty
 import quick303.vu.JiraCloudScenario
+import quick303.vu.JiraDcScenario
 import java.io.File
 import java.net.URI
 import java.nio.file.Paths
@@ -37,7 +37,7 @@ class JiraOfferingComparisonIT {
             benchmark(
                 cohort = "DC",
                 target = loadTarget(File("jira-dc.properties")),
-                scenario = JiraCoreScenario::class.java,
+                scenario = JiraDcScenario::class.java,
                 benchmarkQuality = benchmarkQuality
             )
         }
