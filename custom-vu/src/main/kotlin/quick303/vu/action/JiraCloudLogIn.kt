@@ -6,6 +6,7 @@ import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import com.atlassian.performance.tools.jiraactions.api.page.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.Keys
+import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable
 import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
 import java.time.Duration
@@ -39,5 +40,13 @@ class JiraCloudLogIn(
             condition = visibilityOfElementLocated(By.id("jira")),
             timeout = Duration.ofSeconds(30)
         )
+        skipQuestion(driver)
+        skipQuestion(driver)
+    }
+
+    private fun skipQuestion(driver: WebDriver) {
+        driver
+            .findElements(By.xpath("//*[contains(text(), 'Skip question')]"))
+            .forEach { it.click() }
     }
 }
