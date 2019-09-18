@@ -30,7 +30,7 @@ class CreateCloudIssue(
         }
         meter.measure(CREATE_ISSUE) {
             jira.goToDashboard().dismissAllPopups()
-            openDialog().fillRequiredFields()
+            openDialog().fillRequiredFields() // TODO: to be fair, we should pick a random project and random issue type
             meter.measure(CREATE_ISSUE_SUBMIT) {
                 jira.driver.wait(
                     condition = elementToBeClickable(By.id("create-issue-submit")),

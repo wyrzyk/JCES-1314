@@ -21,7 +21,6 @@ class ScenarioSimilarities(
 
     val jqlMemory = AdaptiveJqlMemory(seededRandom)
         .also { it.remember(listOf("order by created DESC")) } // work around https://ecosystem.atlassian.net/browse/JPERF-573
-        .also { it.remember(listOf("text ~ lorem")) }
     val issueKeyMemory = AdaptiveIssueKeyMemory(seededRandom)
     val projectMemory = AdaptiveProjectMemory(seededRandom)
 
@@ -40,7 +39,7 @@ class ScenarioSimilarities(
             issueKeyMemory = issueKeyMemory,
             random = seededRandom,
             editProbability = 0.10f,
-            commentProbability = 1.00f
+            commentProbability = 0.04f
         ),
         projectSummary = ProjectSummaryAction(
             jira = jira,
@@ -62,11 +61,11 @@ class ScenarioSimilarities(
         viewDashboard: Action,
         browseProjects: Action
     ): List<Action> = mapOf(
-        createIssue to 50, // TODO: 5
+        createIssue to 5,
         searchWithJql to 20,
-        workAnIssue to 2, // TODO: 55
+        workAnIssue to 55,
         projectSummary to 5,
-       // viewDashboard to 10,
+        // viewDashboard to 10, // TODO fix the page objects for Cloud
         browseProjects to 5
     )
         .map { (action, proportion) -> nCopies(proportion, action) }
