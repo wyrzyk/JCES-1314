@@ -7,8 +7,7 @@ import com.atlassian.performance.tools.jiraactions.api.page.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.support.ui.ExpectedConditions.or
-import org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated
+import org.openqa.selenium.support.ui.ExpectedConditions.*
 import java.time.Duration
 
 class InlineCommentForm(
@@ -32,7 +31,10 @@ class InlineCommentForm(
     }
 
     fun submit(): IssuePage {
-        driver.findElement(submitLocator).click()
+        driver.wait(
+            timeout = Duration.ofSeconds(3),
+            condition = elementToBeClickable(submitLocator)
+        )
         return IssuePage(driver)
     }
 
