@@ -10,6 +10,7 @@ import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.Adaptiv
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveJqlMemory
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveProjectMemory
 import quick303.vu.action.WorkAnIssue
+import quick303.vu.page.AbstractIssuePage
 import java.util.Collections.nCopies
 
 class ScenarioSimilarities(
@@ -25,6 +26,7 @@ class ScenarioSimilarities(
     val projectMemory = AdaptiveProjectMemory(seededRandom)
 
     fun assembleScenario(
+        issuePage: AbstractIssuePage,
         createIssue: Action,
         searchWithJql: Action,
         browseProjects: Action
@@ -32,12 +34,13 @@ class ScenarioSimilarities(
         createIssue = createIssue,
         searchWithJql = searchWithJql,
         workAnIssue = WorkAnIssue(
+            issuePage = issuePage,
             jira = jira,
             meter = meter,
             issueKeyMemory = issueKeyMemory,
             random = seededRandom,
             editProbability = 0.10f,
-            commentProbability = 0.04f
+            commentProbability = 1.00f
         ),
         projectSummary = ProjectSummaryAction(
             jira = jira,
@@ -59,11 +62,11 @@ class ScenarioSimilarities(
         viewDashboard: Action,
         browseProjects: Action
     ): List<Action> = mapOf(
-        createIssue to 5,
+        createIssue to 50, // TODO: 5
         searchWithJql to 20,
-        workAnIssue to 55,
+        workAnIssue to 2, // TODO: 55
         projectSummary to 5,
-        viewDashboard to 10,
+       // viewDashboard to 10,
         browseProjects to 5
     )
         .map { (action, proportion) -> nCopies(proportion, action) }

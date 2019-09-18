@@ -8,6 +8,7 @@ import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserTarget
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
 import org.junit.Test
 import quick303.BenchmarkQuality
+import quick303.QuickAndDirty
 import quick303.SlowAndMeaningful
 import quick303.vu.JiraCloudScenario
 import quick303.vu.JiraDcScenario

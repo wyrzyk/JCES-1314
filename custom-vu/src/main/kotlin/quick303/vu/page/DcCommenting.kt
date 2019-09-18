@@ -1,13 +1,13 @@
 package quick303.vu.page
 
+import com.atlassian.performance.tools.jiraactions.api.page.CommentForm
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable
 import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
 import quick303.vu.wait
 
-class ClassicCommenting(
+class DcCommenting(
     private val driver: WebDriver
 ) : Commenting {
 
@@ -15,23 +15,15 @@ class ClassicCommenting(
         driver
             .wait(elementToBeClickable(By.id("footer-comment-button")))
             .click()
-        waitForEditor()
-    }
-
-    private fun waitForEditor() {
-        driver
-            .wait(elementToBeClickable(By.id("comment")))
-            .click()
+        InlineCommentForm(driver).waitForButton()
     }
 
     override fun typeIn(comment: String) {
-        Actions(driver)
-            .sendKeys(comment)
-            .perform()
+        InlineCommentForm(driver).enterCommentText(comment)
     }
 
     override fun saveComment() {
-        driver.findElement(By.id("issue-comment-add-submit")).click()
+        InlineCommentForm(driver).submit()
     }
 
     override fun waitForTheNewComment() {

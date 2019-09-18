@@ -7,18 +7,15 @@ import org.openqa.selenium.support.ui.ExpectedConditions.or
 import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
 import quick303.vu.wait
 
-class CloudIssuePage(
+class DcIssuePage(
     private val driver: WebDriver
 ) : AbstractIssuePage {
-    private val bentoSummary = By.cssSelector("[data-test-id='issue.views.issue-base.foundation.summary.heading']")
-    private val classicSummary = By.id("key-val")
 
-    override fun waitForSummary(): CloudIssuePage {
+    override fun waitForSummary(): DcIssuePage {
         val jiraErrors = JiraErrors(driver)
         driver.wait(
             or(
-                visibilityOfElementLocated(bentoSummary),
-                visibilityOfElementLocated(classicSummary),
+                visibilityOfElementLocated(By.id("key-val")),
                 jiraErrors.anyCommonError()
             )
         )
@@ -27,14 +24,6 @@ class CloudIssuePage(
     }
 
     override fun comment(): Commenting {
-        return if (isCommentingClassic()) {
-            ClassicCloudCommenting(driver)
-        } else {
-            BentoCommenting(driver)
-        }
+        return DcCommenting(driver)
     }
-
-    private fun isCommentingClassic(): Boolean = driver
-        .findElements(By.id("footer-comment-button"))
-        .isNotEmpty()
 }

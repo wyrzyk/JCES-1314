@@ -10,6 +10,7 @@ import quick303.vu.action.BrowseCloudProjects
 import quick303.vu.action.CreateCloudIssue
 import quick303.vu.action.JiraCloudLogIn
 import quick303.vu.action.SearchCloudJql
+import quick303.vu.page.CloudIssuePage
 
 class JiraCloudScenario : Scenario {
 
@@ -28,6 +29,7 @@ class JiraCloudScenario : Scenario {
     ): List<Action> {
         val similarities = ScenarioSimilarities(jira, seededRandom, meter)
         return similarities.assembleScenario(
+            issuePage = CloudIssuePage(jira.driver),
             createIssue = CreateCloudIssue(
                 jira = jira,
                 meter = meter,

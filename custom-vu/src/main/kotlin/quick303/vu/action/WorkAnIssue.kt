@@ -6,12 +6,13 @@ import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.IssueKeyMemory
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import quick303.vu.page.CloudIssuePage
+import quick303.vu.page.AbstractIssuePage
 
 /**
  * Works for both Cloud and Data Center.
  */
 class WorkAnIssue(
+    private val issuePage: AbstractIssuePage,
     private val jira: WebJira,
     private val meter: ActionMeter,
     private val issueKeyMemory: IssueKeyMemory,
@@ -27,27 +28,27 @@ class WorkAnIssue(
             logger.debug("I don't recall any issue keys. Maybe next time I will.")
             return
         }
-        val issuePage = read(issueKey)
+        val loadedIssuePage = read(issueKey)
         if (random.random.nextFloat() < editProbability) {
-            edit(issuePage)
+            edit(loadedIssuePage)
         }
         if (random.random.nextFloat() < commentProbability) {
-            comment(issuePage)
+            comment(loadedIssuePage)
         }
     }
 
     private fun read(
         issueKey: String
-    ): CloudIssuePage = meter.measure(VIEW_ISSUE) {
+    ): AbstractIssuePage = meter.measure(VIEW_ISSUE) {
         jira.goToIssue(issueKey)
-        CloudIssuePage(jira.driver).waitForSummary()
+        issuePage.waitForSummary()
     }
 
-    private fun edit(issuePage: CloudIssuePage) {
+    private fun edit(issuePage: AbstractIssuePage) {
         logger.debug("I want to edit the $issuePage")
     }
 
-    private fun comment(issuePage: CloudIssuePage) {
+    private fun comment(issuePage: AbstractIssuePage) {
         val commenting = issuePage.comment()
         meter.measure(ADD_COMMENT) {
             commenting.openEditor()

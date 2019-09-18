@@ -10,6 +10,7 @@ import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.JiraCoreScenario
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
+import quick303.vu.page.DcIssuePage
 
 class JiraDcScenario : Scenario {
 
@@ -28,6 +29,7 @@ class JiraDcScenario : Scenario {
     ): List<Action> {
         val similarities = ScenarioSimilarities(jira, seededRandom, meter)
         return similarities.assembleScenario(
+            issuePage = DcIssuePage(jira.driver),
             createIssue = CreateIssueAction(
                 jira = jira,
                 meter = meter,

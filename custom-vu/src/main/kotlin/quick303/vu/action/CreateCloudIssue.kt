@@ -2,7 +2,6 @@ package quick303.vu.action;
 
 import com.atlassian.performance.tools.jiraactions.api.CREATE_ISSUE
 import com.atlassian.performance.tools.jiraactions.api.CREATE_ISSUE_SUBMIT
-import com.atlassian.performance.tools.jiraactions.api.VIEW_DASHBOARD
 import com.atlassian.performance.tools.jiraactions.api.WebJira
 import com.atlassian.performance.tools.jiraactions.api.action.Action
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
@@ -30,11 +29,7 @@ class CreateCloudIssue(
             return
         }
         meter.measure(CREATE_ISSUE) {
-            meter.measure(VIEW_DASHBOARD) {
-                jira.goToDashboard().waitForDashboard()
-            }.apply {
-                dismissAllPopups();
-            }
+            jira.goToDashboard().dismissAllPopups()
             openDialog().fillRequiredFields()
             meter.measure(CREATE_ISSUE_SUBMIT) {
                 jira.driver.wait(
