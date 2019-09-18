@@ -15,6 +15,7 @@ import com.atlassian.performance.tools.awsinfrastructure.api.virtualusers.Multic
 import com.atlassian.performance.tools.awsinfrastructure.api.virtualusers.ProvisionedVirtualUsers
 import com.atlassian.performance.tools.infrastructure.api.virtualusers.DirectResultsTransport
 import com.atlassian.performance.tools.io.api.dereference
+import com.atlassian.performance.tools.io.api.ensureDirectory
 import java.nio.file.Path
 import java.time.Duration
 import java.util.*
@@ -51,7 +52,7 @@ class AwsVus : VirtualUsersSource {
             .provision(
                 investment = investment,
                 shadowJarTransport = aws.virtualUsersStorage(nonce),
-                resultsTransport = DirectResultsTransport(resultsTarget),
+                resultsTransport = DirectResultsTransport(resultsTarget.ensureDirectory()),
                 roleProfile = aws.shortTermStorageAccess(),
                 key = CompletableFuture.completedFuture(sshKey),
                 aws = aws
