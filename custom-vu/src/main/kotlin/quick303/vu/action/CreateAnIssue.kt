@@ -15,10 +15,11 @@ import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.support.ui.ExpectedConditions.*
 import java.time.Duration
 
-class CreateCloudIssue(
+class CreateAnIssue(
     private val jira: WebJira,
     private val meter: ActionMeter,
-    private val projectMemory: ProjectMemory
+    private val projectMemory: ProjectMemory,
+    private val createIssueButton: By
 ) : Action {
     private val logger: Logger = LogManager.getLogger(this::class.java)
 
@@ -48,7 +49,7 @@ class CreateCloudIssue(
         val driver = jira.driver
         driver
             .wait(
-                condition = elementToBeClickable(By.id("createGlobalItem")),
+                condition = elementToBeClickable(createIssueButton),
                 timeout = Duration.ofSeconds(10)
             )
             .click()

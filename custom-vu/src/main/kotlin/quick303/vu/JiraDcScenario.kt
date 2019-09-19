@@ -4,12 +4,13 @@ import com.atlassian.performance.tools.jiraactions.api.SeededRandom
 import com.atlassian.performance.tools.jiraactions.api.WebJira
 import com.atlassian.performance.tools.jiraactions.api.action.Action
 import com.atlassian.performance.tools.jiraactions.api.action.BrowseProjectsAction
-import com.atlassian.performance.tools.jiraactions.api.action.CreateIssueAction
 import com.atlassian.performance.tools.jiraactions.api.action.SearchJqlAction
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.JiraCoreScenario
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
+import org.openqa.selenium.By
+import quick303.vu.action.CreateAnIssue
 import quick303.vu.page.DcIssuePage
 
 class JiraDcScenario : Scenario {
@@ -30,11 +31,11 @@ class JiraDcScenario : Scenario {
         val similarities = ScenarioSimilarities(jira, seededRandom, meter)
         return similarities.assembleScenario(
             issuePage = DcIssuePage(jira.driver),
-            createIssue = CreateIssueAction(
+            createIssue = CreateAnIssue(
                 jira = jira,
                 meter = meter,
                 projectMemory = similarities.projectMemory,
-                seededRandom = seededRandom
+                createIssueButton = By.id("create_link")
             ),
             searchWithJql = SearchJqlAction(
                 jira = jira,

@@ -6,10 +6,8 @@ import com.atlassian.performance.tools.jiraactions.api.action.Action
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
-import quick303.vu.action.BrowseCloudProjects
-import quick303.vu.action.CreateCloudIssue
-import quick303.vu.action.JiraCloudLogIn
-import quick303.vu.action.SearchCloudJql
+import org.openqa.selenium.By
+import quick303.vu.action.*
 import quick303.vu.page.CloudIssuePage
 
 class JiraCloudScenario : Scenario {
@@ -30,10 +28,11 @@ class JiraCloudScenario : Scenario {
         val similarities = ScenarioSimilarities(jira, seededRandom, meter)
         return similarities.assembleScenario(
             issuePage = CloudIssuePage(jira.driver),
-            createIssue = CreateCloudIssue(
+            createIssue = CreateAnIssue(
                 jira = jira,
                 meter = meter,
-                projectMemory = similarities.projectMemory
+                projectMemory = similarities.projectMemory,
+                createIssueButton = By.id("createGlobalItem")
             ),
             searchWithJql = SearchCloudJql(
                 jira = jira,
