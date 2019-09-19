@@ -29,6 +29,15 @@ tasks.getByName("test", Test::class).apply {
     }
 }
 
+val zipWorkspace = task<Zip>("zipWorkspace") {
+    from("$buildDir/jpt-workspace")
+    archiveFileName.set("jpt-workspace.zip")
+    destinationDirectory.set(buildDir)
+    doLast {
+        println("Zipped workspace at ${archiveFile.get()}")
+    }
+}
+
 task<Test>("compareOfferings").apply {
     outputs.upToDateWhen { false }
     include("**/JiraOfferingComparisonIT.class")
@@ -36,6 +45,7 @@ task<Test>("compareOfferings").apply {
     dependsOn(shadowJarTask)
     systemProperty("jpt.virtual-users.shadow-jar", shadowJarTask.outputs.files.files.first())
     maxHeapSize = "4g"
+    finalizedBy(zipWorkspace)
 }
 
 dependencies {
