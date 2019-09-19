@@ -1,7 +1,10 @@
 package quick303.vu.action
 
+import com.atlassian.performance.tools.jiraactions.api.LOG_IN
 import com.atlassian.performance.tools.jiraactions.api.WebJira
 import com.atlassian.performance.tools.jiraactions.api.action.Action
+import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
+import com.atlassian.performance.tools.jiraactions.api.memories.User
 import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import com.atlassian.performance.tools.jiraactions.api.page.wait
 import org.openqa.selenium.By
@@ -13,14 +16,26 @@ import java.time.Duration
 
 class JiraCloudLogIn(
     private val userMemory: UserMemory,
-    private val jira: WebJira
+    private val jira: WebJira,
+    private val meter: ActionMeter
 ) : Action {
 
     override fun run() {
         val user = userMemory
             .recall()
             ?: throw Exception("Don't remember which user I am")
-        val driver = jira.driver
+        meter.measure(LOG_IN) {
+            logIn(jira.driver, user)
+        }
+        repeat(2) {
+            skipQuestion(jira.driver)
+        }
+    }
+
+    private fun logIn(
+        driver: WebDriver,
+        user: User
+    ) {
         driver.navigate().to(jira.base.toURL())
         driver
             .wait(
@@ -40,8 +55,6 @@ class JiraCloudLogIn(
             condition = visibilityOfElementLocated(By.id("jira")),
             timeout = Duration.ofSeconds(30)
         )
-        skipQuestion(driver)
-        skipQuestion(driver)
     }
 
     private fun skipQuestion(driver: WebDriver) {

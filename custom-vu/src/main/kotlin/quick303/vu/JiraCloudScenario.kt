@@ -7,7 +7,10 @@ import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import org.openqa.selenium.By
-import quick303.vu.action.*
+import quick303.vu.action.BrowseCloudProjects
+import quick303.vu.action.CreateAnIssue
+import quick303.vu.action.JiraCloudLogIn
+import quick303.vu.action.SearchCloudJql
 import quick303.vu.page.CloudIssuePage
 
 class JiraCloudScenario : Scenario {
@@ -17,7 +20,7 @@ class JiraCloudScenario : Scenario {
         meter: ActionMeter,
         userMemory: UserMemory
     ): Action {
-        return JiraCloudLogIn(userMemory, jira)
+        return JiraCloudLogIn(userMemory, jira, meter)
     }
 
     override fun getActions(
