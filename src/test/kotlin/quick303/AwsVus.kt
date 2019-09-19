@@ -52,7 +52,7 @@ class AwsVus : VirtualUsersSource {
             .provision(
                 investment = investment,
                 shadowJarTransport = aws.virtualUsersStorage(nonce),
-                resultsTransport = DirectResultsTransport(resultsTarget.ensureDirectory()),
+                resultsTransport = workAroundDirectResultTransportRaceCondition(resultsTarget),
                 roleProfile = aws.shortTermStorageAccess(),
                 key = CompletableFuture.completedFuture(sshKey),
                 aws = aws
@@ -64,6 +64,13 @@ class AwsVus : VirtualUsersSource {
                 dependency = sshKey.remote
             )
         )
+    }
+
+    private fun workAroundDirectResultTransportRaceCondition(
+        resultsTarget: Path
+    ): DirectResultsTransport {
+        resultsTarget.resolve("virtual-users").ensureDirectory()
+        return DirectResultsTransport(resultsTarget)
     }
 
     private fun prepareAws() = Aws.Builder(Regions.EU_WEST_1)
