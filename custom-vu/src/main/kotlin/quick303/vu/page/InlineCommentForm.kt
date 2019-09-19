@@ -31,10 +31,12 @@ class InlineCommentForm(
     }
 
     fun submit(): IssuePage {
-        driver.wait(
-            timeout = Duration.ofSeconds(3),
-            condition = elementToBeClickable(submitLocator)
-        )
+        driver
+            .wait(
+                timeout = Duration.ofSeconds(3),
+                condition = elementToBeClickable(submitLocator)
+            )
+            .click()
         return IssuePage(driver)
     }
 
