@@ -9,41 +9,39 @@ import com.atlassian.performance.tools.workspace.api.RootWorkspace
 import org.junit.Test
 import quick303.BenchmarkQuality
 import quick303.QuickAndDirty
-import quick303.SlowAndMeaningful
 import quick303.vu.JiraCloudScenario
-import quick303.vu.JiraDcScenario
 import java.io.File
 import java.net.URI
 import java.nio.file.Paths
-import java.util.*
+import java.util.Properties
 import java.util.concurrent.Executors
 
-class JiraOfferingComparisonIT {
+class JiraPerformanceComparisonIT {
 
     private val workspace = RootWorkspace(Paths.get("build")).currentTask
 
     @Test
-    fun shouldCompareCloudWithDc() {
-        val benchmarkQuality: BenchmarkQuality = SlowAndMeaningful()
+    fun shouldComparePerformance() {
+        val benchmarkQuality: BenchmarkQuality = QuickAndDirty()
         val pool = Executors.newCachedThreadPool()
-        val cloudResult = pool.submitWithLogContext("Cloud") {
+        val baseline = pool.submitWithLogContext("baseline") {
             benchmark(
-                cohort = "Cloud",
-                target = loadTarget(File("jira-cloud.properties")),
+                cohort = "Hello",
+                target = loadTarget(File("jira-baseline.properties")),
                 scenario = JiraCloudScenario::class.java,
                 benchmarkQuality = benchmarkQuality
             )
         }
-        val dcResult = pool.submitWithLogContext("DC") {
+        val experiment = pool.submitWithLogContext("experiment") {
             benchmark(
-                cohort = "DC",
-                target = loadTarget(File("jira-dc.properties")),
-                scenario = JiraDcScenario::class.java,
+                cohort = "10k",
+                target = loadTarget(File("jira-experiment.properties")),
+                scenario = JiraCloudScenario::class.java,
                 benchmarkQuality = benchmarkQuality
             )
         }
         FullReport().dump(
-            results = listOf(cloudResult, dcResult).map { it.get().prepareForJudgement(FullTimeline()) },
+            results = listOf(baseline, experiment).map { it.get().prepareForJudgement(FullTimeline()) },
             workspace = workspace.isolateTest("Compare")
         )
     }

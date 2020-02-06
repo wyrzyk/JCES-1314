@@ -38,9 +38,9 @@ val zipWorkspace = task<Zip>("zipWorkspace") {
     }
 }
 
-task<Test>("compareOfferings").apply {
+task<Test>("comparePerformance").apply {
     outputs.upToDateWhen { false }
-    include("**/JiraOfferingComparisonIT.class")
+    include("**/JiraPerformanceComparisonIT.class")
     val shadowJarTask = tasks.getByPath(":custom-vu:shadowJar")
     dependsOn(shadowJarTask)
     systemProperty("jpt.virtual-users.shadow-jar", shadowJarTask.outputs.files.files.first())
