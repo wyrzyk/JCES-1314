@@ -24,3 +24,6 @@ In such case, reprovision it and update the pointers.
 
 [example properties]: example-jira.properties
 [JPERF-379]: https://ecosystem.atlassian.net/browse/JPERF-379
+
+### Prior art
+Originally forked from [quick-303](https://github.com/atlassian/quick-303).

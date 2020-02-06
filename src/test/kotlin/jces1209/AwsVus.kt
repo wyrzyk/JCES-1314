@@ -1,4 +1,4 @@
-package quick303
+package jces1209
 
 import com.amazonaws.auth.AWSCredentialsProviderChain
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain

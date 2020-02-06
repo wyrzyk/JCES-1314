@@ -1,4 +1,4 @@
-package quick303.vu
+package jces1209.vu
 
 import com.atlassian.performance.tools.jiraactions.api.page.wait
 import org.openqa.selenium.WebDriver

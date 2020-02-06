@@ -1,4 +1,4 @@
-package quick303
+package jces1209
 
 import com.atlassian.performance.tools.aws.api.UnallocatedResource
 import com.atlassian.performance.tools.awsinfrastructure.api.virtualusers.ProvisionedVirtualUsers

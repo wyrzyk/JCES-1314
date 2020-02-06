@@ -1,4 +1,4 @@
-package quick303.vu.action
+package jces1209.vu.action
 
 import com.atlassian.performance.tools.jiraactions.api.ADD_COMMENT
 import com.atlassian.performance.tools.jiraactions.api.ADD_COMMENT_SUBMIT
@@ -10,7 +10,7 @@ import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.IssueKeyMemory
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import quick303.vu.page.CloudIssuePage
+import jces1209.vu.page.CloudIssuePage
 
 class WorkAnIssue(
     private val issuePage: CloudIssuePage,

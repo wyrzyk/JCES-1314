@@ -1,4 +1,4 @@
-package quick303.vu
+package jces1209.vu
 
 import com.atlassian.performance.tools.jiraactions.api.SeededRandom
 import com.atlassian.performance.tools.jiraactions.api.WebJira
@@ -11,12 +11,12 @@ import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.Adaptiv
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveProjectMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import org.openqa.selenium.By
-import quick303.vu.action.BrowseCloudProjects
-import quick303.vu.action.CreateAnIssue
-import quick303.vu.action.JiraCloudLogIn
-import quick303.vu.action.SearchCloudJql
-import quick303.vu.action.WorkAnIssue
-import quick303.vu.page.CloudIssuePage
+import jces1209.vu.action.BrowseCloudProjects
+import jces1209.vu.action.CreateAnIssue
+import jces1209.vu.action.JiraCloudLogIn
+import jces1209.vu.action.SearchCloudJql
+import jces1209.vu.action.WorkAnIssue
+import jces1209.vu.page.CloudIssuePage
 import java.util.Collections
 
 class JiraCloudScenario : Scenario {

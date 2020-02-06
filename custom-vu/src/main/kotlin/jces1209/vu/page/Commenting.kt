@@ -1,4 +1,4 @@
-package quick303.vu.page
+package jces1209.vu.page
 
 interface Commenting {
 

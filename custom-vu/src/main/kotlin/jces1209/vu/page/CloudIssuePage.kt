@@ -1,11 +1,11 @@
-package quick303.vu.page
+package jces1209.vu.page
 
 import com.atlassian.performance.tools.jiraactions.api.page.JiraErrors
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions.or
 import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
-import quick303.vu.wait
+import jces1209.vu.wait
 
 class CloudIssuePage(
     private val driver: WebDriver

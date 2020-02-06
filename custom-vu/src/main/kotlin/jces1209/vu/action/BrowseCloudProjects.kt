@@ -1,11 +1,11 @@
-package quick303.vu.action
+package jces1209.vu.action
 
 import com.atlassian.performance.tools.jiraactions.api.BROWSE_PROJECTS
 import com.atlassian.performance.tools.jiraactions.api.WebJira
 import com.atlassian.performance.tools.jiraactions.api.action.Action
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.ProjectMemory
-import quick303.vu.page.JiraCloudProjectList
+import jces1209.vu.page.JiraCloudProjectList
 import java.time.Duration
 
 class BrowseCloudProjects(

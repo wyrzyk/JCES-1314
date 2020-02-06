@@ -1,4 +1,4 @@
-package quick303
+package jces1209
 
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserBehavior

@@ -1,4 +1,4 @@
-package quick303.vu.page
+package jces1209.vu.page
 
 import com.atlassian.performance.tools.jiraactions.api.memories.Project
 import com.atlassian.performance.tools.jiraactions.api.page.wait

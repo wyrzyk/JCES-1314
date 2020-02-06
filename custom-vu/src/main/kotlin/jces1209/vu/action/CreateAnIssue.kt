@@ -1,4 +1,4 @@
-package quick303.vu.action;
+package jces1209.vu.action;
 
 import com.atlassian.performance.tools.jiraactions.api.CREATE_ISSUE
 import com.atlassian.performance.tools.jiraactions.api.CREATE_ISSUE_SUBMIT

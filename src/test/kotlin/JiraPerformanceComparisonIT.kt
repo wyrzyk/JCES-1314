@@ -6,9 +6,9 @@ import com.atlassian.performance.tools.virtualusers.api.VirtualUserOptions
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserTarget
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
 import org.junit.Test
-import quick303.BenchmarkQuality
-import quick303.QuickAndDirty
-import quick303.vu.JiraCloudScenario
+import jces1209.BenchmarkQuality
+import jces1209.QuickAndDirty
+import jces1209.vu.JiraCloudScenario
 import java.io.File
 import java.net.URI
 import java.nio.file.Paths
