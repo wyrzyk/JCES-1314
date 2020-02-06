@@ -8,6 +8,7 @@ Benchmark two Jiras against each other.
     Invite the Jira user.
     The benchmark needs to work around [JPERF-379].
     To do that, remove the activity stream gadget from the system dashboard.
+    The benchmark expects at least one project and one board to exist.
 
 3. Point to the experiment instance via `jira-experiment.properties` file akin to the [example properties].
 

@@ -53,7 +53,7 @@ dependencies {
     testCompile("com.atlassian.performance.tools:jira-performance-tests:[3.3.0,4.0.0)")
     testCompile("com.atlassian.performance.tools:infrastructure:[4.12.0,5.0.0)")
     testCompile("com.atlassian.performance.tools:virtual-users:[3.10.0,4.0.0)")
-    testCompile("com.atlassian.performance.tools:jira-software-actions:[1.0.0,2.0.0)")
+    testCompile("com.atlassian.performance.tools:jira-software-actions:[1.3.2,2.0.0)")
     testCompile("com.atlassian.performance.tools:aws-infrastructure:[2.14.0,3.0.0)")
     testCompile("com.atlassian.performance.tools:aws-resources:[1.3.4,2.0.0)")
     testCompile("com.atlassian.performance.tools:report:[3.7.1,4.0.0)")
