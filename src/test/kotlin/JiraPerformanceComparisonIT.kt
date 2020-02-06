@@ -1,5 +1,4 @@
 import com.atlassian.performance.tools.concurrency.api.submitWithLogContext
-import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import com.atlassian.performance.tools.report.api.FullReport
 import com.atlassian.performance.tools.report.api.FullTimeline
 import com.atlassian.performance.tools.report.api.result.RawCohortResult
@@ -19,25 +18,21 @@ import java.util.concurrent.Executors
 class JiraPerformanceComparisonIT {
 
     private val workspace = RootWorkspace(Paths.get("build")).currentTask
+    private val benchmarkQuality: BenchmarkQuality = QuickAndDirty()
 
     @Test
     fun shouldComparePerformance() {
-        val benchmarkQuality: BenchmarkQuality = QuickAndDirty()
         val pool = Executors.newCachedThreadPool()
         val baseline = pool.submitWithLogContext("baseline") {
             benchmark(
                 cohort = "Hello",
-                target = loadTarget(File("jira-baseline.properties")),
-                scenario = JiraCloudScenario::class.java,
-                benchmarkQuality = benchmarkQuality
+                target = loadTarget(File("jira-baseline.properties"))
             )
         }
         val experiment = pool.submitWithLogContext("experiment") {
             benchmark(
                 cohort = "10k",
-                target = loadTarget(File("jira-experiment.properties")),
-                scenario = JiraCloudScenario::class.java,
-                benchmarkQuality = benchmarkQuality
+                target = loadTarget(File("jira-experiment.properties"))
             )
         }
         FullReport().dump(
@@ -47,23 +42,21 @@ class JiraPerformanceComparisonIT {
     }
 
     private fun loadTarget(properties: File): VirtualUserTarget {
-        val jiraCloud = Properties()
-        properties.bufferedReader().use { jiraCloud.load(it) }
+        val props = Properties()
+        properties.bufferedReader().use { props.load(it) }
         return VirtualUserTarget(
-            webApplication = URI(jiraCloud.getProperty("jira.uri")!!),
-            userName = jiraCloud.getProperty("user.name")!!,
-            password = jiraCloud.getProperty("user.password")!!
+            webApplication = URI(props.getProperty("jira.uri")!!),
+            userName = props.getProperty("user.name")!!,
+            password = props.getProperty("user.password")!!
         )
     }
 
     private fun benchmark(
         cohort: String,
-        target: VirtualUserTarget,
-        scenario: Class<out Scenario>,
-        benchmarkQuality: BenchmarkQuality
+        target: VirtualUserTarget
     ): RawCohortResult {
         val resultsTarget = workspace.directory.resolve("vu-results").resolve(cohort)
-        val options = VirtualUserOptions(target, benchmarkQuality.behave(scenario))
+        val options = VirtualUserOptions(target, benchmarkQuality.behave(JiraCloudScenario::class.java))
         val provisioned = benchmarkQuality
             .provide()
             .obtainVus(resultsTarget, workspace.directory)
