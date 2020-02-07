@@ -67,7 +67,7 @@ class JiraCloudScenario : Scenario {
             meter = meter,
             issueKeyMemory = issueKeyMemory,
             random = seededRandom,
-            commentProbability = 0.04f
+            commentProbability = 0.00f // 0.04f
         )
         val projectSummary = ProjectSummaryAction(
             jira = jira,
@@ -88,7 +88,7 @@ class JiraCloudScenario : Scenario {
             issueKeyMemory = issueKeyMemory
         )
         return mapOf(
-            createIssue to 5,
+            createIssue to 0,
             searchWithJql to 20,
             workAnIssue to 55,
             projectSummary to 5,
