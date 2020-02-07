@@ -6,15 +6,17 @@ import com.atlassian.performance.tools.jiraactions.api.action.Action
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.User
 import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
-import com.atlassian.performance.tools.jiraactions.api.page.wait
+import jces1209.vu.page.JiraCloudWelcome
+import jces1209.vu.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.Keys
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.WebElement
+import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable
-import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
-import java.time.Duration
+import org.openqa.selenium.support.ui.ExpectedConditions.or
 
-class JiraCloudLogIn(
+class LogInWithGoogle(
     private val userMemory: UserMemory,
     private val jira: WebJira,
     private val meter: ActionMeter
@@ -27,39 +29,41 @@ class JiraCloudLogIn(
         meter.measure(LOG_IN) {
             logIn(jira.driver, user)
         }
-        repeat(2) {
-            skipQuestion(jira.driver)
-        }
+        JiraCloudWelcome(jira.driver).skipToJira()
     }
 
     private fun logIn(
         driver: WebDriver,
         user: User
     ) {
-        driver.navigate().to(jira.base.toURL())
+        jira.goToLogin()
         driver
-            .wait(
-                condition = elementToBeClickable(By.id("username")),
-                timeout = Duration.ofSeconds(15)
+            .wait(elementToBeClickable(By.id("google-signin-button")))
+            .also { it.click() }
+        val challengeLocator = By.id("identifierId")
+        val reLogLocator = By.cssSelector("[data-email='${user.name}']")
+        driver.wait(
+            or(
+                elementToBeClickable(challengeLocator),
+                elementToBeClickable(reLogLocator)
             )
+        )
+        val challenge = driver.findElements(challengeLocator).singleOrNull()
+        if (challenge != null) {
+            answerChallenge(challenge, user, driver)
+        } else {
+            driver.findElement(reLogLocator).click()
+        }
+        driver.wait(ExpectedConditions.presenceOfElementLocated(By.id("jira")))
+    }
+
+    private fun answerChallenge(nameInput: WebElement, user: User, driver: WebDriver) {
+        nameInput
             .also { it.sendKeys(user.name) }
             .also { it.sendKeys(Keys.RETURN) }
         driver
-            .wait(
-                condition = elementToBeClickable(By.id("password")),
-                timeout = Duration.ofSeconds(20)
-            )
+            .wait(elementToBeClickable(By.cssSelector("[type=password]")))
             .also { it.sendKeys(user.password) }
             .also { it.sendKeys(Keys.RETURN) }
-        driver.wait(
-            condition = visibilityOfElementLocated(By.id("jira")),
-            timeout = Duration.ofSeconds(30)
-        )
-    }
-
-    private fun skipQuestion(driver: WebDriver) {
-        driver
-            .findElements(By.xpath("//*[contains(text(), 'Skip question')]"))
-            .forEach { it.click() }
     }
 }

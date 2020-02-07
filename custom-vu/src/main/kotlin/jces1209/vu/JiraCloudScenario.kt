@@ -17,7 +17,7 @@ import com.atlassian.performance.tools.jirasoftwareactions.api.memories.Adaptive
 import jces1209.vu.action.BrowseCloudBoards
 import jces1209.vu.action.BrowseCloudProjects
 import jces1209.vu.action.CreateAnIssue
-import jces1209.vu.action.JiraCloudLogIn
+import jces1209.vu.action.LogInWithGoogle
 import jces1209.vu.action.SearchCloudJql
 import jces1209.vu.action.WorkAnIssue
 import jces1209.vu.page.CloudIssuePage
@@ -31,7 +31,7 @@ class JiraCloudScenario : Scenario {
         meter: ActionMeter,
         userMemory: UserMemory
     ): Action {
-        return JiraCloudLogIn(userMemory, jira, meter)
+        return LogInWithGoogle(userMemory, jira, meter)
     }
 
     override fun getActions(
