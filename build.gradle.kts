@@ -79,8 +79,7 @@ configurations.all {
                 when (requested.module.toString()) {
                     "org.slf4j:slf4j-api" -> useVersion("1.8.0-alpha2")
                     "commons-logging:commons-logging" -> useVersion("1.2")
-                    "com.google.guava:guava" -> useVersion("23.6-jre")
-                    "com.google.code.gson:gson" -> useVersion("2.8.2")
+                    "com.google.guava:guava" -> useVersion("25.0-jre")
                     "org.jsoup:jsoup" -> useVersion("1.10.2")
                     "com.jcraft:jzlib" -> useVersion("1.1.3")
                     "com.fasterxml.jackson.core:jackson-core" -> useVersion("2.9.4")
@@ -92,6 +91,7 @@ configurations.all {
                 when (requested.group) {
                     "org.jetbrains.kotlin" -> useVersion("1.2.70")
                     "org.apache.logging.log4j" -> useVersion("2.12.1")
+                    "org.seleniumhq.selenium" -> useVersion("3.141.59")
                 }
             }
         }

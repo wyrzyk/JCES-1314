@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
 
 val kotlinVersion = "1.2.70"
+val seleniumVersion = "3.141.59"
 
 plugins {
     kotlin("jvm")
@@ -11,8 +12,9 @@ plugins {
 
 dependencies {
     implementation("com.atlassian.performance.tools:virtual-users:[3.10.0,4.0.0)")
+    implementation("com.atlassian.performance.tools:jira-actions:[3.10.1,4.0.0)")
     implementation("com.atlassian.performance.tools:jira-software-actions:[1.3.2,2.0.0)")
-    implementation("org.seleniumhq.selenium:selenium-support:3.11.0")
+    implementation("org.seleniumhq.selenium:selenium-support:$seleniumVersion")
     implementation("org.glassfish:javax.json:1.1")
     implementation(kotlin("stdlib-jdk8"))
 }
@@ -33,11 +35,13 @@ configurations.all {
             when (requested.module.toString()) {
                 "commons-codec:commons-codec" -> useVersion("1.10")
                 "com.google.code.gson:gson" -> useVersion("2.8.2")
+                "com.google.guava:guava" -> useVersion("25.0-jre")
                 "org.slf4j:slf4j-api" -> useVersion("1.8.0-alpha2")
             }
             when (requested.group) {
                 "org.jetbrains.kotlin" -> useVersion(kotlinVersion)
                 "org.apache.logging.log4j" -> useVersion("2.12.1")
+                "org.seleniumhq.selenium" -> useVersion(seleniumVersion)
             }
         }
     }
