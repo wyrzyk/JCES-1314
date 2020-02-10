@@ -44,6 +44,7 @@ class LogInWithAtlassianId(
             )
             .also { it.sendKeys(user.name) }
             .also { it.sendKeys(Keys.RETURN) }
+        Thread.sleep(50) // animations I guess
         driver
             .wait(
                 condition = elementToBeClickable(By.id("password")),
