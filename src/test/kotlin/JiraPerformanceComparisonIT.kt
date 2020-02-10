@@ -25,13 +25,13 @@ class JiraPerformanceComparisonIT {
         val pool = Executors.newCachedThreadPool()
         val baseline = pool.submitWithLogContext("baseline") {
             benchmark(
-                cohort = "Hello",
+                cohort = "double JDOG",
                 target = loadTarget(File("jira-baseline.properties"))
             )
         }
         val experiment = pool.submitWithLogContext("experiment") {
             benchmark(
-                cohort = "10k",
+                cohort = "10k EAP",
                 target = loadTarget(File("jira-experiment.properties"))
             )
         }

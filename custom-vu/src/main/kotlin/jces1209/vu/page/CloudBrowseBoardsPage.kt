@@ -16,6 +16,6 @@ class CloudBrowseBoardsPage(
         val tableElement = driver.wait(
             ExpectedConditions.visibilityOfElementLocated(tableLocator)
         )
-        return CloudBoardList(tableElement)
+        return CloudBoardList(tableElement, driver)
     }
 }

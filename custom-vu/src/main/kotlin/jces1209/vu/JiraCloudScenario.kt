@@ -10,17 +10,15 @@ import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.Adaptiv
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveJqlMemory
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveProjectMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
-import com.atlassian.performance.tools.jirasoftwareactions.api.WebJiraSoftware
-import com.atlassian.performance.tools.jirasoftwareactions.api.actions.ViewBoardAction
-import com.atlassian.performance.tools.jirasoftwareactions.api.boards.AgileBoard
-import com.atlassian.performance.tools.jirasoftwareactions.api.memories.AdaptiveBoardMemory
 import jces1209.vu.action.BrowseCloudBoards
 import jces1209.vu.action.BrowseCloudProjects
 import jces1209.vu.action.CreateAnIssue
 import jces1209.vu.action.LogInWithAtlassianId
 import jces1209.vu.action.SearchCloudJql
+import jces1209.vu.action.ViewCloudBoard
 import jces1209.vu.action.WorkAnIssue
 import jces1209.vu.page.CloudIssuePage
+import jces1209.vu.page.boards.BoardPage
 import org.openqa.selenium.By
 import java.util.Collections
 
@@ -77,27 +75,26 @@ class JiraCloudScenario : Scenario {
             meter = meter,
             projectMemory = projectMemory
         )
-        val jsw = WebJiraSoftware(jira)
-        val agileBoardMemory = AdaptiveBoardMemory<AgileBoard>(seededRandom)
+        val boardPages = SeededMemory<BoardPage>(seededRandom)
         val browseBoards = BrowseCloudBoards(
             jira = jira,
             meter = meter,
-            boardsMemory = agileBoardMemory
+            boardsMemory = boardPages
         )
-        val viewBoard = ViewBoardAction(
-            jiraSoftware = jsw,
+        val viewBoard = ViewCloudBoard(
+            jira = jira,
             meter = meter,
-            boardMemory = agileBoardMemory,
+            boardMemory = boardPages,
             issueKeyMemory = issueKeyMemory
         )
         return mapOf(
             createIssue to 0,
-            searchWithJql to 20,
-            workAnIssue to 55,
-            projectSummary to 5,
-            browseProjects to 5,
-            browseBoards to 5,
-            viewBoard to 30
+            searchWithJql to 0,
+            workAnIssue to 0,
+            projectSummary to 0,
+            browseProjects to 0,
+            browseBoards to 2,
+            viewBoard to 10
         )
             .map { (action, proportion) -> Collections.nCopies(proportion, action) }
             .flatten()

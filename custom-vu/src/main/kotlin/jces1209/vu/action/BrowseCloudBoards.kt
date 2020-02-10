@@ -4,16 +4,16 @@ import com.atlassian.performance.tools.jiraactions.api.BROWSE_BOARDS
 import com.atlassian.performance.tools.jiraactions.api.WebJira
 import com.atlassian.performance.tools.jiraactions.api.action.Action
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
-import com.atlassian.performance.tools.jirasoftwareactions.api.boards.AgileBoard
-import com.atlassian.performance.tools.jirasoftwareactions.api.memories.BoardMemory
+import com.atlassian.performance.tools.jiraactions.api.memories.Memory
 import jces1209.vu.page.CloudBrowseBoardsPage
+import jces1209.vu.page.boards.BoardPage
 import net.jcip.annotations.NotThreadSafe
 
 @NotThreadSafe
 class BrowseCloudBoards(
     private val jira: WebJira,
     private val meter: ActionMeter,
-    private val boardsMemory: BoardMemory<AgileBoard>
+    private val boardsMemory: Memory<BoardPage>
 ) : Action {
 
     override fun run() {
