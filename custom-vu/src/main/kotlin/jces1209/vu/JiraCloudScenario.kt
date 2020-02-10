@@ -89,12 +89,12 @@ class JiraCloudScenario : Scenario {
         )
         return mapOf(
             createIssue to 0,
-            searchWithJql to 0,
-            workAnIssue to 0,
-            projectSummary to 0,
-            browseProjects to 0,
-            browseBoards to 2,
-            viewBoard to 10
+            searchWithJql to 20,
+            workAnIssue to 55,
+            projectSummary to 5,
+            browseProjects to 5,
+            browseBoards to 5,
+            viewBoard to 30
         )
             .map { (action, proportion) -> Collections.nCopies(proportion, action) }
             .flatten()
