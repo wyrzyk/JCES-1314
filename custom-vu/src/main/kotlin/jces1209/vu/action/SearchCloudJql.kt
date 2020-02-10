@@ -11,7 +11,9 @@ import com.atlassian.performance.tools.jiraactions.api.page.IssueNavigatorPage
 import com.atlassian.performance.tools.jiraactions.api.page.JiraErrors
 import com.atlassian.performance.tools.jiraactions.api.page.wait
 import org.openqa.selenium.By
-import org.openqa.selenium.support.ui.ExpectedConditions.*
+import org.openqa.selenium.support.ui.ExpectedConditions.and
+import org.openqa.selenium.support.ui.ExpectedConditions.or
+import org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated
 import java.time.Duration
 import javax.json.JsonObject
 
@@ -36,7 +38,7 @@ class SearchCloudJql(
                 return SearchJqlObservation(
                     navigator.jql,
                     issueKeys.size,
-                    navigator.getTotalResults()
+                    -1 // work around https://ecosystem.atlassian.net/browse/JPERF-605
                 ).serialize()
             }
         )
