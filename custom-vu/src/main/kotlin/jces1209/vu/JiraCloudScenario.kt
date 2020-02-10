@@ -17,7 +17,7 @@ import com.atlassian.performance.tools.jirasoftwareactions.api.memories.Adaptive
 import jces1209.vu.action.BrowseCloudBoards
 import jces1209.vu.action.BrowseCloudProjects
 import jces1209.vu.action.CreateAnIssue
-import jces1209.vu.action.LogInWithGoogle
+import jces1209.vu.action.LogInWithAtlassianId
 import jces1209.vu.action.SearchCloudJql
 import jces1209.vu.action.WorkAnIssue
 import jces1209.vu.page.CloudIssuePage
@@ -31,7 +31,10 @@ class JiraCloudScenario : Scenario {
         meter: ActionMeter,
         userMemory: UserMemory
     ): Action {
-        return LogInWithGoogle(userMemory, jira, meter)
+        val user = userMemory
+            .recall()
+            ?: throw Exception("I cannot recall which user I am")
+        return LogInWithAtlassianId(user, jira, meter)
     }
 
     override fun getActions(

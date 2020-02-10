@@ -5,37 +5,35 @@ import com.atlassian.performance.tools.jiraactions.api.WebJira
 import com.atlassian.performance.tools.jiraactions.api.action.Action
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.User
-import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import jces1209.vu.page.JiraCloudWelcome
 import jces1209.vu.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.Keys
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
-import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable
 import org.openqa.selenium.support.ui.ExpectedConditions.or
 
+/**
+ * Use with great deal of caution. Google is outside of our control.
+ * Sometimes they get paranoid and block log in attempts, because they "don't recognize this device".
+ * Instead of giving them phone numbers or fallback recovery options, we can use [LogInWithAtlassianId] instead.
+ * Also, we cannot predict when and how they'll change the log in experience.
+ */
 class LogInWithGoogle(
-    private val userMemory: UserMemory,
+    private val user: User,
     private val jira: WebJira,
     private val meter: ActionMeter
 ) : Action {
 
     override fun run() {
-        val user = userMemory
-            .recall()
-            ?: throw Exception("Don't remember which user I am")
         meter.measure(LOG_IN) {
-            logIn(jira.driver, user)
+            logIn()
         }
-        JiraCloudWelcome(jira.driver).skipToJira()
     }
 
-    private fun logIn(
-        driver: WebDriver,
-        user: User
-    ) {
+    private fun logIn() {
+        val driver = jira.driver
         jira.goToLogin()
         driver
             .wait(elementToBeClickable(By.id("google-signin-button")))
@@ -54,7 +52,7 @@ class LogInWithGoogle(
         } else {
             driver.findElement(reLogLocator).click()
         }
-        driver.wait(ExpectedConditions.presenceOfElementLocated(By.id("jira")))
+        JiraCloudWelcome(driver).skipToJira()
     }
 
     private fun answerChallenge(nameInput: WebElement, user: User, driver: WebDriver) {
