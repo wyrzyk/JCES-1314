@@ -10,6 +10,7 @@ import jces1209.vu.page.JiraCloudWelcome
 import org.openqa.selenium.By
 import org.openqa.selenium.Keys
 import org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable
+import org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated
 import java.time.Duration
 
 /**
@@ -44,12 +45,17 @@ class LogInWithAtlassianId(
             )
             .also { it.sendKeys(user.name) }
             .also { it.sendKeys(Keys.RETURN) }
-        Thread.sleep(50) // animations I guess
         driver
             .wait(
-                condition = elementToBeClickable(By.id("password")),
-                timeout = Duration.ofSeconds(20)
+                condition = presenceOfElementLocated(By.id("password")),
+                timeout = Duration.ofSeconds(5)
             )
+            .also {
+                driver.wait(
+                    condition = elementToBeClickable(it),
+                    timeout = Duration.ofSeconds(5)
+                )
+            }
             .also { it.sendKeys(user.password) }
             .also { it.sendKeys(Keys.RETURN) }
         JiraCloudWelcome(jira.driver).skipToJira()
