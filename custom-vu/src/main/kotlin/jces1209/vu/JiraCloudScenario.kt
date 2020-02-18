@@ -87,7 +87,8 @@ class JiraCloudScenario : Scenario {
             boardMemory = boardPages,
             issueKeyMemory = issueKeyMemory
         )
-        return mapOf(
+        val exploreData = listOf(browseProjects, searchWithJql, browseBoards)
+        val spreadOut = mapOf(
             createIssue to 0,
             searchWithJql to 20,
             workAnIssue to 55,
@@ -99,5 +100,6 @@ class JiraCloudScenario : Scenario {
             .map { (action, proportion) -> Collections.nCopies(proportion, action) }
             .flatten()
             .shuffled(seededRandom.random)
+        return exploreData + spreadOut
     }
 }
