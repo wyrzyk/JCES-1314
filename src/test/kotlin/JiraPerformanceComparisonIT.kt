@@ -3,12 +3,13 @@ import com.atlassian.performance.tools.report.api.FullReport
 import com.atlassian.performance.tools.report.api.FullTimeline
 import com.atlassian.performance.tools.report.api.result.RawCohortResult
 import com.atlassian.performance.tools.virtualusers.api.VirtualUserOptions
+import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserBehavior
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserTarget
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
-import org.junit.Test
 import jces1209.BenchmarkQuality
 import jces1209.QuickAndDirty
 import jces1209.vu.JiraCloudScenario
+import org.junit.Test
 import java.io.File
 import java.net.URI
 import java.nio.file.Paths
@@ -26,13 +27,13 @@ class JiraPerformanceComparisonIT {
         val baseline = pool.submitWithLogContext("baseline") {
             benchmark(
                 cohort = "double JDOG",
-                target = loadTarget(File("jira-baseline.properties"))
+                options = loadOptions(File("jira-baseline.properties"))
             )
         }
         val experiment = pool.submitWithLogContext("experiment") {
             benchmark(
                 cohort = "10k EAP",
-                target = loadTarget(File("jira-experiment.properties"))
+                options = loadOptions(File("jira-experiment.properties"))
             )
         }
         FullReport().dump(
@@ -41,22 +42,35 @@ class JiraPerformanceComparisonIT {
         )
     }
 
-    private fun loadTarget(properties: File): VirtualUserTarget {
+    private fun loadOptions(properties: File): VirtualUserOptions {
         val props = Properties()
         properties.bufferedReader().use { props.load(it) }
-        return VirtualUserTarget(
-            webApplication = URI(props.getProperty("jira.uri")!!),
+        val uri = URI(props.getProperty("jira.uri")!!)
+        val target = VirtualUserTarget(
+            webApplication = uri,
             userName = props.getProperty("user.name")!!,
             password = props.getProperty("user.password")!!
         )
+        val behavior = benchmarkQuality.behave(JiraCloudScenario::class.java)
+            .let { VirtualUserBehavior.Builder(it) }
+            .avoidLeakingPersonalData(uri)
+            .build()
+        return VirtualUserOptions(target, behavior)
+    }
+
+    private fun VirtualUserBehavior.Builder.avoidLeakingPersonalData(
+        uri: URI
+    ) = apply {
+        if (uri.host.endsWith("atlassian.net")) {
+            diagnosticsLimit(0)
+        }
     }
 
     private fun benchmark(
         cohort: String,
-        target: VirtualUserTarget
+        options: VirtualUserOptions
     ): RawCohortResult {
         val resultsTarget = workspace.directory.resolve("vu-results").resolve(cohort)
-        val options = VirtualUserOptions(target, benchmarkQuality.behave(JiraCloudScenario::class.java))
         val provisioned = benchmarkQuality
             .provide()
             .obtainVus(resultsTarget, workspace.directory)
