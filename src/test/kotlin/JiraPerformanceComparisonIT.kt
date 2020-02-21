@@ -13,7 +13,6 @@ import org.junit.Test
 import java.io.File
 import java.net.URI
 import java.nio.file.Paths
-import java.util.Properties
 import java.util.concurrent.Executors
 
 class JiraPerformanceComparisonIT {
@@ -25,16 +24,10 @@ class JiraPerformanceComparisonIT {
     fun shouldComparePerformance() {
         val pool = Executors.newCachedThreadPool()
         val baseline = pool.submitWithLogContext("baseline") {
-            benchmark(
-                cohort = "double JDOG",
-                options = loadOptions(File("jira-baseline.properties"))
-            )
+            benchmark(File("jira-baseline.properties"))
         }
         val experiment = pool.submitWithLogContext("experiment") {
-            benchmark(
-                cohort = "10k EAP",
-                options = loadOptions(File("jira-experiment.properties"))
-            )
+            benchmark(File("jira-experiment.properties"))
         }
         FullReport().dump(
             results = listOf(baseline, experiment).map { it.get().prepareForJudgement(FullTimeline()) },
@@ -42,34 +35,12 @@ class JiraPerformanceComparisonIT {
         )
     }
 
-    private fun loadOptions(properties: File): VirtualUserOptions {
-        val props = Properties()
-        properties.bufferedReader().use { props.load(it) }
-        val uri = URI(props.getProperty("jira.uri")!!)
-        val target = VirtualUserTarget(
-            webApplication = uri,
-            userName = props.getProperty("user.name")!!,
-            password = props.getProperty("user.password")!!
-        )
-        val behavior = benchmarkQuality.behave(JiraCloudScenario::class.java)
-            .let { VirtualUserBehavior.Builder(it) }
-            .avoidLeakingPersonalData(uri)
-            .build()
-        return VirtualUserOptions(target, behavior)
-    }
-
-    private fun VirtualUserBehavior.Builder.avoidLeakingPersonalData(
-        uri: URI
-    ) = apply {
-        if (uri.host.endsWith("atlassian.net")) {
-            diagnosticsLimit(0)
-        }
-    }
-
     private fun benchmark(
-        cohort: String,
-        options: VirtualUserOptions
+        propertiesFile: File
     ): RawCohortResult {
+        val properties = CohortProperties.load(propertiesFile)
+        val options = loadOptions(properties)
+        val cohort = properties.cohort
         val resultsTarget = workspace.directory.resolve("vu-results").resolve(cohort)
         val provisioned = benchmarkQuality
             .provide()
@@ -84,6 +55,27 @@ class JiraPerformanceComparisonIT {
             RawCohortResult.Factory().failedResult(cohort, resultsTarget, e)
         } finally {
             provisioned.resource.release().get()
+        }
+    }
+
+    private fun loadOptions(properties: CohortProperties): VirtualUserOptions {
+        val target = VirtualUserTarget(
+            webApplication = properties.jira,
+            userName = properties.userName,
+            password = properties.userPassword
+        )
+        val behavior = benchmarkQuality.behave(JiraCloudScenario::class.java)
+            .let { VirtualUserBehavior.Builder(it) }
+            .avoidLeakingPersonalData(properties.jira)
+            .build()
+        return VirtualUserOptions(target, behavior)
+    }
+
+    private fun VirtualUserBehavior.Builder.avoidLeakingPersonalData(
+        uri: URI
+    ) = apply {
+        if (uri.host.endsWith("atlassian.net")) {
+            diagnosticsLimit(0)
         }
     }
 }
