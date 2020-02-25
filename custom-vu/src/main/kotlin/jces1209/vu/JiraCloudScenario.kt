@@ -10,6 +10,7 @@ import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.Adaptiv
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveJqlMemory
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveProjectMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
+import com.atlassian.performance.tools.jiraactions.api.w3c.JavascriptW3cPerformanceTimeline
 import jces1209.vu.action.BrowseCloudBoards
 import jces1209.vu.action.BrowseCloudProjects
 import jces1209.vu.action.CreateAnIssue
@@ -20,6 +21,7 @@ import jces1209.vu.action.WorkAnIssue
 import jces1209.vu.page.CloudIssuePage
 import jces1209.vu.page.boards.BoardPage
 import org.openqa.selenium.By
+import org.openqa.selenium.JavascriptExecutor
 import java.util.Collections
 
 class JiraCloudScenario : Scenario {
@@ -40,6 +42,8 @@ class JiraCloudScenario : Scenario {
         seededRandom: SeededRandom,
         meter: ActionMeter
     ): List<Action> {
+        val waterfall = JavascriptW3cPerformanceTimeline(jira.driver as JavascriptExecutor)
+        val waterfallMeter = meter.withW3cPerformanceTimeline(waterfall)
         val jqlMemory = AdaptiveJqlMemory(seededRandom)
             .also { it.remember(listOf("order by created DESC")) } // work around https://ecosystem.atlassian.net/browse/JPERF-573
         val issueKeyMemory = AdaptiveIssueKeyMemory(seededRandom)
@@ -65,7 +69,7 @@ class JiraCloudScenario : Scenario {
         val workAnIssue = WorkAnIssue(
             issuePage = issuePage,
             jira = jira,
-            meter = meter,
+            meter = waterfallMeter,
             issueKeyMemory = issueKeyMemory,
             random = seededRandom,
             commentProbability = 0.00f // 0.04f
