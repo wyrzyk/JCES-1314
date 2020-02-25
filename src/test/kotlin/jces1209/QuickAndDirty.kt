@@ -2,8 +2,8 @@ package jces1209
 
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import com.atlassian.performance.tools.virtualusers.api.VirtualUserLoad
-import com.atlassian.performance.tools.virtualusers.api.browsers.GoogleChrome
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserBehavior
+import jces1209.vu.Firefox
 import java.time.Duration
 
 class QuickAndDirty : BenchmarkQuality {
@@ -13,7 +13,7 @@ class QuickAndDirty : BenchmarkQuality {
     override fun behave(
         scenario: Class<out Scenario>
     ): VirtualUserBehavior = VirtualUserBehavior.Builder(scenario)
-        .browser(GoogleChrome::class.java)
+        .browser(Firefox::class.java) // local Chrome is flaky around version 80, so let's use Firefox
         .load(
             VirtualUserLoad.Builder()
                 .ramp(Duration.ZERO)

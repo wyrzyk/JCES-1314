@@ -5,6 +5,7 @@ import com.atlassian.performance.tools.awsinfrastructure.api.virtualusers.Provis
 import com.atlassian.performance.tools.infrastructure.api.virtualusers.LocalVirtualUsers
 import com.atlassian.performance.tools.infrastructure.api.virtualusers.VirtualUsers
 import com.atlassian.performance.tools.virtualusers.api.VirtualUserOptions
+import io.github.bonigarcia.wdm.FirefoxDriverManager
 import java.nio.file.Path
 
 class LocalVus : VirtualUsersSource {
@@ -12,10 +13,13 @@ class LocalVus : VirtualUsersSource {
     override fun obtainVus(
         resultsTarget: Path,
         workspace: Path
-    ): ProvisionedVirtualUsers<*> = ProvisionedVirtualUsers(
-        virtualUsers = SequentialVirtualUsers(LocalVirtualUsers(resultsTarget)),
-        resource = UnallocatedResource()
-    )
+    ): ProvisionedVirtualUsers<*> {
+        FirefoxDriverManager.getInstance().version("0.26.0").setup()
+        return ProvisionedVirtualUsers(
+            virtualUsers = SequentialVirtualUsers(LocalVirtualUsers(resultsTarget)),
+            resource = UnallocatedResource()
+        )
+    }
 }
 
 /**
