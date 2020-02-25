@@ -1,19 +1,22 @@
 import com.atlassian.performance.tools.concurrency.api.submitWithLogContext
 import com.atlassian.performance.tools.report.api.FullReport
 import com.atlassian.performance.tools.report.api.FullTimeline
+import com.atlassian.performance.tools.report.api.WaterfallHighlightReport
+import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.api.result.RawCohortResult
 import com.atlassian.performance.tools.virtualusers.api.VirtualUserOptions
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserBehavior
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserTarget
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
+import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import jces1209.BenchmarkQuality
-import jces1209.QuickAndDirty
 import jces1209.SlowAndMeaningful
 import jces1209.vu.JiraCloudScenario
 import org.junit.Test
 import java.io.File
 import java.net.URI
 import java.nio.file.Paths
+import java.time.Duration
 import java.util.concurrent.Executors
 
 class JiraPerformanceComparisonIT {
@@ -30,10 +33,12 @@ class JiraPerformanceComparisonIT {
         val experiment = pool.submitWithLogContext("experiment") {
             benchmark(File("jira-experiment.properties"))
         }
+        val results = listOf(baseline, experiment).map { it.get().prepareForJudgement(FullTimeline()) }
         FullReport().dump(
-            results = listOf(baseline, experiment).map { it.get().prepareForJudgement(FullTimeline()) },
+            results = results,
             workspace = workspace.isolateTest("Compare")
         )
+        dumpMegaSlowWaterfalls(results)
     }
 
     private fun benchmark(
@@ -77,6 +82,22 @@ class JiraPerformanceComparisonIT {
     ) = apply {
         if (uri.host.endsWith("atlassian.net")) {
             diagnosticsLimit(0)
+        }
+    }
+
+    private fun dumpMegaSlowWaterfalls(
+        results: List<EdibleResult>
+    ) {
+        results.forEach { result ->
+            val megaSlow = result.actionMetrics.filter { it.duration > Duration.ofMinutes(1) }
+            WaterfallHighlightReport().report(
+                metrics = megaSlow,
+                workspace = workspace
+                    .isolateTest("Mega slow")
+                    .directory
+                    .resolve(result.cohort)
+                    .let { TestWorkspace(it) }
+            )
         }
     }
 }
