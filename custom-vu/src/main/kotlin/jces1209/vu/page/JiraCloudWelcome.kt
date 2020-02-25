@@ -3,22 +3,26 @@ package jces1209.vu.page
 import jces1209.vu.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable
+import org.openqa.selenium.support.ui.ExpectedConditions.or
+import org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated
 
 class JiraCloudWelcome(
     private val driver: WebDriver
 ) {
 
     fun skipToJira() = apply {
-        driver.wait(ExpectedConditions.presenceOfElementLocated(By.id("jira")))
+        val questionSkip = By.xpath("//*[contains(text(), 'Skip question')]")
+        driver.wait(
+            or(
+                presenceOfElementLocated(By.id("jira")),
+                elementToBeClickable(questionSkip)
+            )
+        )
         repeat(2) {
-            skipQuestion()
+            driver
+                .findElements(questionSkip)
+                .forEach { it.click() }
         }
-    }
-
-    private fun skipQuestion() {
-        driver
-            .findElements(By.xpath("//*[contains(text(), 'Skip question')]"))
-            .forEach { it.click() }
     }
 }

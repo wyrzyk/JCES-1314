@@ -29,6 +29,8 @@ class LogInWithAtlassianId(
     private val meter: ActionMeter
 ) : Action {
 
+    private val driver = jira.driver
+
     override fun run() {
         meter.measure(LOG_IN) {
             logIn()
@@ -36,28 +38,40 @@ class LogInWithAtlassianId(
     }
 
     private fun logIn() {
-        val driver = jira.driver
         jira.goToLogin()
+        fillUserName()
+        fillPassword()
+        chooseAccount()
+        JiraCloudWelcome(driver).skipToJira()
+    }
+
+    private fun fillUserName() {
         driver
             .wait(
                 condition = elementToBeClickable(By.id("username")),
-                timeout = Duration.ofSeconds(15)
+                timeout = Duration.ofSeconds(5)
             )
             .also { it.sendKeys(user.name) }
             .also { it.sendKeys(Keys.RETURN) }
+    }
+
+    private fun fillPassword() {
         driver
             .wait(
-                condition = presenceOfElementLocated(By.id("password")),
+                condition = elementToBeClickable(By.id("password")),
                 timeout = Duration.ofSeconds(5)
             )
-            .also {
-                driver.wait(
-                    condition = elementToBeClickable(it),
-                    timeout = Duration.ofSeconds(5)
-                )
-            }
             .also { it.sendKeys(user.password) }
             .also { it.sendKeys(Keys.RETURN) }
-        JiraCloudWelcome(jira.driver).skipToJira()
+    }
+
+    private fun chooseAccount() {
+        val chooseAccount = driver
+            .findElements(By.xpath("//*[contains(text(), 'Choose or add another account')]"))
+            .isNotEmpty()
+        if (chooseAccount) {
+            val myAccount = driver.findElement(By.xpath("//*[contains(text(), '${user.name}')]"))
+            myAccount.click()
+        }
     }
 }
