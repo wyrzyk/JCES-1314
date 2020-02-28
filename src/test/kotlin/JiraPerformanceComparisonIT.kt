@@ -11,7 +11,9 @@ import com.atlassian.performance.tools.workspace.api.RootWorkspace
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import jces1209.BenchmarkQuality
 import jces1209.SlowAndMeaningful
+import jces1209.log.LogConfigurationFactory
 import jces1209.vu.JiraCloudScenario
+import org.apache.logging.log4j.core.config.ConfigurationFactory
 import org.junit.Test
 import java.io.File
 import java.net.URI
@@ -23,6 +25,10 @@ class JiraPerformanceComparisonIT {
 
     private val workspace = RootWorkspace(Paths.get("build")).currentTask
     private val benchmarkQuality: BenchmarkQuality = SlowAndMeaningful()
+
+    init {
+        ConfigurationFactory.setConfigurationFactory(LogConfigurationFactory(workspace))
+    }
 
     @Test
     fun shouldComparePerformance() {
