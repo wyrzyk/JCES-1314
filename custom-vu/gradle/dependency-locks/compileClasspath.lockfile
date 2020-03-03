@@ -24,6 +24,7 @@ org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.70
 org.jetbrains.kotlin:kotlin-stdlib:1.2.70
 org.jetbrains:annotations:13.0
 org.seleniumhq.selenium:selenium-api:3.141.59
+org.seleniumhq.selenium:selenium-chrome-driver:3.141.59
 org.seleniumhq.selenium:selenium-firefox-driver:3.141.59
 org.seleniumhq.selenium:selenium-remote-driver:3.141.59
 org.seleniumhq.selenium:selenium-support:3.141.59
