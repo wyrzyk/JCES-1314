@@ -47,6 +47,7 @@ class AwsVus : VirtualUsersSource {
             nodes = 6,
             shadowJar = dereference("jpt.virtual-users.shadow-jar")
         )
+            .browser(Chromium77())
             .network(network)
             .build()
             .provision(
