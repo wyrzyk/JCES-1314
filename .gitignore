@@ -5,3 +5,4 @@ jira-experiment.properties
 virtual-users.log
 test-results
 diagnoses
+cloud-session.properties
