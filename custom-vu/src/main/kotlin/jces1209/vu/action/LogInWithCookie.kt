@@ -29,7 +29,7 @@ class LogInWithCookie(
         val cloudSession = parseCookie()
         previsitCookieDomain(cloudSession.domain)
         jira.driver.manage().addCookie(cloudSession)
-        jira.navigateTo("")
+        jira.navigateTo("secure/MyJiraHome.jspa")
         JiraCloudWelcome(jira.driver).skipToJira()
     }
 
