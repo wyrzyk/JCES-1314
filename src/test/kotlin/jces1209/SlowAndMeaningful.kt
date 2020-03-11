@@ -25,6 +25,7 @@ class SlowAndMeaningful private constructor(
             VirtualUserLoad.Builder()
                 .virtualUsers(72)
                 .flat(Duration.ofMinutes(20))
+                .maxOverallLoad(TemporalRate(15.0, Duration.ofSeconds(1)))
                 .build()
         )
         .skipSetup(true)
