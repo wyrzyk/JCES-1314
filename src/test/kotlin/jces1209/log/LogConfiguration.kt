@@ -20,16 +20,7 @@ internal class LogConfiguration(
             logToFile(
                 name = "com.atlassian.performance.tools.awsinfrastructure",
                 path = Paths.get("aws-infra.log")
-            ).also { log ->
-                log.addAppender(
-                    KConsoleAppenderBuilder()
-                        .setName("console")
-                        .setLayout(layout("%d{ABSOLUTE} %highlight{%-5level} %x %msg%n"))
-                        .build(),
-                    Level.INFO,
-                    null
-                )
-            },
+            ),
             logToFile(
                 name = "com.atlassian.performance.tools.jvmtasks.api.TaskTimer",
                 path = Paths.get("timing.log"),
@@ -46,7 +37,7 @@ internal class LogConfiguration(
             logToFile(
                 name = "com.atlassian.performance.tools",
                 path = Paths.get("detailed.log")
-            )
+            ).also { logToConsole(it) }
         ).forEach { addLogger(it.name, it) }
     }
 
@@ -75,6 +66,19 @@ internal class LogConfiguration(
             null
         )
         return log
+    }
+
+    private fun logToConsole(
+        log: LoggerConfig
+    ) {
+        log.addAppender(
+            KConsoleAppenderBuilder()
+                .setName("console")
+                .setLayout(layout("%d{ABSOLUTE} %highlight{%-5level} %x %msg%n"))
+                .build(),
+            Level.INFO,
+            null
+        )
     }
 
     private fun layout(
