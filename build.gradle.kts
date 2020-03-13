@@ -38,6 +38,11 @@ task<Test>("comparePerformance").apply {
     maxHeapSize = "4g"
 }
 
+task<Test>("processResults").apply {
+    outputs.upToDateWhen { false }
+    include("**/ExistingResultsIT.class")
+}
+
 dependencies {
     testCompile(project(":custom-vu"))
     testCompile("com.atlassian.performance.tools:jira-performance-tests:[3.3.0,4.0.0)")
