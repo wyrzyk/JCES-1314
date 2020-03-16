@@ -1,3 +1,4 @@
+import com.atlassian.performance.tools.concurrency.api.AbruptExecutorService
 import com.atlassian.performance.tools.concurrency.api.submitWithLogContext
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import com.atlassian.performance.tools.report.api.FullReport
@@ -21,7 +22,7 @@ import java.io.File
 import java.net.URI
 import java.nio.file.Paths
 import java.time.Duration
-import java.util.concurrent.Executors
+import java.util.concurrent.Executors.newCachedThreadPool
 
 class JiraPerformanceComparisonIT {
 
@@ -34,14 +35,15 @@ class JiraPerformanceComparisonIT {
 
     @Test
     fun shouldComparePerformance() {
-        val pool = Executors.newCachedThreadPool()
-        val baseline = pool.submitWithLogContext("baseline") {
-            benchmark(File("jira-baseline.properties"), JiraDcScenario::class.java)
+        val results = AbruptExecutorService(newCachedThreadPool()).use { pool ->
+            val baseline = pool.submitWithLogContext("baseline") {
+                benchmark(File("jira-baseline.properties"), JiraDcScenario::class.java)
+            }
+            val experiment = pool.submitWithLogContext("experiment") {
+                benchmark(File("jira-experiment.properties"), JiraCloudScenario::class.java)
+            }
+            listOf(baseline, experiment).map { it.get().prepareForJudgement(FullTimeline()) }
         }
-        val experiment = pool.submitWithLogContext("experiment") {
-            benchmark(File("jira-experiment.properties"), JiraCloudScenario::class.java)
-        }
-        val results = listOf(baseline, experiment).map { it.get().prepareForJudgement(FullTimeline()) }
         FullReport().dump(
             results = results,
             workspace = workspace.isolateTest("Compare")
