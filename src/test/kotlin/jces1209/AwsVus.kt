@@ -5,8 +5,12 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import com.amazonaws.auth.EC2ContainerCredentialsProviderWrapper
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.regions.Regions
+import com.amazonaws.regions.Regions.EU_CENTRAL_1
 import com.amazonaws.regions.Regions.EU_WEST_1
+import com.amazonaws.regions.Regions.EU_WEST_2
 import com.amazonaws.regions.Regions.US_EAST_1
+import com.amazonaws.regions.Regions.US_WEST_1
 import com.atlassian.performance.tools.aws.api.Aws
 import com.atlassian.performance.tools.aws.api.DependentResources
 import com.atlassian.performance.tools.aws.api.Investment
@@ -22,7 +26,10 @@ import java.time.Duration
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 
-class AwsVus(duration: Duration) : VirtualUsersSource {
+class AwsVus(
+    duration: Duration,
+    private val region: Regions
+) : VirtualUsersSource {
 
     private val lifespan = Duration.ofMinutes(10) + duration
 
@@ -47,9 +54,9 @@ class AwsVus(duration: Duration) : VirtualUsersSource {
             aws = aws
         ).provision()
         val provisioned = MulticastVirtualUsersFormula.Builder(
-            nodes = 6,
-            shadowJar = dereference("jpt.virtual-users.shadow-jar")
-        )
+                nodes = 6,
+                shadowJar = dereference("jpt.virtual-users.shadow-jar")
+            )
             .browser(Chromium77())
             .network(network)
             .build()
@@ -77,7 +84,7 @@ class AwsVus(duration: Duration) : VirtualUsersSource {
         return DirectResultsTransport(resultsTarget)
     }
 
-    private fun prepareAws() = Aws.Builder(US_EAST_1)
+    private fun prepareAws() = Aws.Builder(region)
         .credentialsProvider(
             AWSCredentialsProviderChain(
                 STSAssumeRoleSessionCredentialsProvider.Builder(
@@ -89,7 +96,10 @@ class AwsVus(duration: Duration) : VirtualUsersSource {
                 DefaultAWSCredentialsProviderChain()
             )
         )
-        .regionsWithHousekeeping(listOf(EU_WEST_1, US_EAST_1)) // https://server-gdn-bamboo.internal.atlassian.com/browse/JIRA-JPTH
+        .regionsWithHousekeeping(
+            // https://server-gdn-bamboo.internal.atlassian.com/browse/JIRA-JPTH
+            listOf(US_EAST_1, US_WEST_1, EU_CENTRAL_1, EU_WEST_1, EU_WEST_2)
+        )
         .batchingCloudformationRefreshPeriod(Duration.ofSeconds(20))
         .build()
 }
