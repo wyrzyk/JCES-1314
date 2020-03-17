@@ -3,6 +3,7 @@ package jces1209.vu.page.boards
 import jces1209.vu.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.support.ui.ExpectedConditions.or
 import org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated
 import java.net.URI
 
@@ -12,8 +13,16 @@ internal class ClassicBoardPage(
 ) : BoardPage {
 
     override fun waitForAnyIssue(): BoardContent {
+        val issueLimitExceededLocator = By.xpath("//*[contains(text(), 'Your board has too many issues')]")
+        val boardNotAccessibleLocator = By.xpath("//*[contains(text(), 'Board not accessible')]")
+        val boardIssueColumnLocator = By.cssSelector(".ghx-column")
         driver.wait(
-            presenceOfElementLocated(By.cssSelector(".ghx-column"))
+            or(
+                presenceOfElementLocated(boardIssueColumnLocator),
+                presenceOfElementLocated(issueLimitExceededLocator),
+                presenceOfElementLocated(boardNotAccessibleLocator)
+            )
+
         )
         return KanbanBoardContent(driver)
     }
