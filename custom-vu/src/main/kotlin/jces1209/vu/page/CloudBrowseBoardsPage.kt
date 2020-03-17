@@ -1,9 +1,10 @@
 package jces1209.vu.page
 
-import jces1209.vu.wait
+import com.atlassian.performance.tools.jiraactions.api.page.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
+import java.time.Duration
 
 class CloudBrowseBoardsPage(
     private val driver: WebDriver
@@ -14,7 +15,8 @@ class CloudBrowseBoardsPage(
 
     fun waitForBoards(): CloudBoardList {
         val tableElement = driver.wait(
-            ExpectedConditions.visibilityOfElementLocated(tableLocator)
+            condition = visibilityOfElementLocated(tableLocator),
+            timeout = Duration.ofSeconds(25)
         )
         return CloudBoardList(tableElement, driver)
     }
