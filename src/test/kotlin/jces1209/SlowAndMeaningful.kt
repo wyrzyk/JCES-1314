@@ -11,10 +11,9 @@ import java.time.Duration
 
 class SlowAndMeaningful private constructor(
     private val browser: Class<out Browser>,
-    private val region: Regions
+    private val region: Regions,
+    private val duration: Duration
 ) : BenchmarkQuality {
-
-    private val duration = Duration.ofMinutes(20)
 
     override fun provide(): VirtualUsersSource = AwsVus(duration, region)
 
@@ -34,14 +33,17 @@ class SlowAndMeaningful private constructor(
     class Builder {
         private var browser: Class<out Browser> = EagerChromeBrowser::class.java
         private var region: Regions = Regions.US_EAST_1
+        private var duration: Duration = Duration.ofMinutes(20)
 
         fun browser(browser: Class<out Browser>) = apply { this.browser = browser }
         fun region(region: Regions) = apply { this.region = region }
+        fun duration(duration: Duration) = apply { this.duration = duration }
 
         fun build(): BenchmarkQuality {
             return SlowAndMeaningful(
                 browser,
-                region
+                region,
+                duration
             )
         }
     }
