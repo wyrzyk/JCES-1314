@@ -1,30 +1,32 @@
 package jces1209.vu.page.boards
 
-import jces1209.vu.wait
+import jces1209.vu.page.FalliblePage
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
-import org.openqa.selenium.support.ui.ExpectedConditions.or
-import org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated
 import java.net.URI
 
 class NextGenBoardPage(
     private val driver: WebDriver,
     override val uri: URI
 ) : BoardPage {
-    private val boardLoadedLocators = listOf(
-        By.xpath("//*[contains(text(), 'Your board has too many issues')]"),
-        By.xpath("//*[contains(text(), 'Board not accessible')]"),
-        By.cssSelector("[data-test-id='platform-board-kit.common.ui.column-header.header.column-header-container']")
+
+    private val falliblePage = FalliblePage.Builder(
+        webDriver = driver,
+        expectedContent = listOf(
+            By.xpath("//*[contains(text(), 'Your board has too many issues')]"),
+            By.xpath("//*[contains(text(), 'Board not accessible')]"),
+            By.cssSelector("[data-test-id='platform-board-kit.common.ui.column-header.header.column-header-container']")
+        )
     )
+        .cloudErrors()
+        .build()
 
     override fun waitForBoardPageToLoad(): BoardContent {
         driver.get(uri.toString())
         closeModals()
 
-        driver.wait(
-            or(*boardLoadedLocators.map { presenceOfElementLocated(it) }.toTypedArray())
-        )
+        falliblePage.waitForPageToLoad()
 
         val issueCards = findIssueCards()
         return NextGenBoardContent(issueCards)

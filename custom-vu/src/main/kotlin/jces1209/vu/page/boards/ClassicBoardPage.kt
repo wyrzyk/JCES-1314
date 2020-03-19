@@ -1,27 +1,29 @@
 package jces1209.vu.page.boards
 
-import jces1209.vu.wait
+import jces1209.vu.page.FalliblePage
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.support.ui.ExpectedConditions.or
-import org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated
 import java.net.URI
 
 internal class ClassicBoardPage(
     private val driver: WebDriver,
     override val uri: URI
 ) : BoardPage {
-    private val boardLoadedLocators = listOf(
-        By.xpath("//*[contains(text(), 'Your board has too many issues')]"),
-        By.xpath("//*[contains(text(), 'Board not accessible')]"),
-        By.xpath("//*[contains(text(), 'Set a new location for your board')]"),
-        By.cssSelector(".ghx-column")
+
+    private val falliblePage = FalliblePage.Builder(
+        webDriver = driver,
+        expectedContent = listOf(
+            By.xpath("//*[contains(text(), 'Your board has too many issues')]"),
+            By.xpath("//*[contains(text(), 'Board not accessible')]"),
+            By.xpath("//*[contains(text(), 'Set a new location for your board')]"),
+            By.cssSelector(".ghx-column")
+        )
     )
+        .cloudErrors()
+        .build()
 
     override fun waitForBoardPageToLoad(): BoardContent {
-        driver.wait(
-            or(*boardLoadedLocators.map { presenceOfElementLocated(it) }.toTypedArray())
-        )
+        falliblePage.waitForPageToLoad()
         return KanbanBoardContent(driver)
     }
 
