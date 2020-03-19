@@ -29,7 +29,7 @@ class ViewCloudBoard(
             key = VIEW_BOARD,
             action = {
                 jira.driver.navigate().to(board.uri.toURL())
-                board.waitForAnyIssue()
+                board.waitForBoardPageToLoad()
             },
             observation = { boardContent ->
                 issueKeyMemory.remember(boardContent.getIssueKeys())

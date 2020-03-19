@@ -11,18 +11,16 @@ internal class ClassicBoardPage(
     private val driver: WebDriver,
     override val uri: URI
 ) : BoardPage {
+    private val boardLoadedLocators = listOf(
+        By.xpath("//*[contains(text(), 'Your board has too many issues')]"),
+        By.xpath("//*[contains(text(), 'Board not accessible')]"),
+        By.xpath("//*[contains(text(), 'Set a new location for your board')]"),
+        By.cssSelector(".ghx-column")
+    )
 
-    override fun waitForAnyIssue(): BoardContent {
-        val issueLimitExceededLocator = By.xpath("//*[contains(text(), 'Your board has too many issues')]")
-        val boardNotAccessibleLocator = By.xpath("//*[contains(text(), 'Board not accessible')]")
-        val boardIssueColumnLocator = By.cssSelector(".ghx-column")
+    override fun waitForBoardPageToLoad(): BoardContent {
         driver.wait(
-            or(
-                presenceOfElementLocated(boardIssueColumnLocator),
-                presenceOfElementLocated(issueLimitExceededLocator),
-                presenceOfElementLocated(boardNotAccessibleLocator)
-            )
-
+            or(*boardLoadedLocators.map { presenceOfElementLocated(it) }.toTypedArray())
         )
         return KanbanBoardContent(driver)
     }

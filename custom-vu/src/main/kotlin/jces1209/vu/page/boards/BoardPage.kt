@@ -5,5 +5,5 @@ import java.net.URI
 interface BoardPage {
 
     val uri: URI
-    fun waitForAnyIssue(): BoardContent
+    fun waitForBoardPageToLoad(): BoardContent
 }

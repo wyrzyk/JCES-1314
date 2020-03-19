@@ -12,26 +12,26 @@ class NextGenBoardPage(
     private val driver: WebDriver,
     override val uri: URI
 ) : BoardPage {
+    private val boardLoadedLocators = listOf(
+        By.xpath("//*[contains(text(), 'Your board has too many issues')]"),
+        By.xpath("//*[contains(text(), 'Board not accessible')]"),
+        By.cssSelector("[data-test-id='platform-board-kit.common.ui.column-header.header.column-header-container']")
+    )
 
-    override fun waitForAnyIssue(): BoardContent {
+    override fun waitForBoardPageToLoad(): BoardContent {
         driver.get(uri.toString())
         closeModals()
-        val issueCards = awaitIssueCards()
+
+        driver.wait(
+            or(*boardLoadedLocators.map { presenceOfElementLocated(it) }.toTypedArray())
+        )
+
+        val issueCards = findIssueCards()
         return NextGenBoardContent(issueCards)
     }
 
-    private fun awaitIssueCards(): List<WebElement> {
+    private fun findIssueCards(): List<WebElement> {
         val issueCardLocator = By.cssSelector("[data-test-id='platform-board-kit.ui.card.card']")
-        val issueLimitExceededLocator = By.xpath("//*[contains(text(), 'Your board has too many issues')]")
-        val boardNotAccessibleLocator = By.xpath("//*[contains(text(), 'Board not accessible')]")
-        val boardIssueColumnLocator = By.cssSelector("[data-test-id='platform-board-kit.common.ui.column-header.header.column-header-container']")
-        driver.wait(
-            or(
-                presenceOfElementLocated(issueLimitExceededLocator),
-                presenceOfElementLocated(boardNotAccessibleLocator),
-                presenceOfElementLocated(boardIssueColumnLocator)
-            )
-        )
         return driver.findElements(issueCardLocator)
     }
 
