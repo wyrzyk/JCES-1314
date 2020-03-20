@@ -44,9 +44,7 @@ class ScenarioSimilarities(
         workAnIssue = WorkAnIssue(
             issuePage = issuePage,
             jira = jira,
-            meter = meter.withW3cPerformanceTimeline(
-                JavascriptW3cPerformanceTimeline(jira.driver as JavascriptExecutor)
-            ),
+            meter = meter,
             issueKeyMemory = issueKeyMemory,
             random = seededRandom,
             editProbability = 0.00f, // 0.10f when TODO fix the page objects for Cloud - tough due to Bento
