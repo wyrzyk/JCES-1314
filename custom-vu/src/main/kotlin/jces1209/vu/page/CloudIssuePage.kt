@@ -1,11 +1,11 @@
 package jces1209.vu.page
 
 import com.atlassian.performance.tools.jiraactions.api.page.JiraErrors
+import jces1209.vu.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions.or
 import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
-import jces1209.vu.wait
 
 class CloudIssuePage(
     private val driver: WebDriver
@@ -13,7 +13,7 @@ class CloudIssuePage(
     private val bentoSummary = By.cssSelector("[data-test-id='issue.views.issue-base.foundation.summary.heading']")
     private val classicSummary = By.id("key-val")
 
-    override fun waitForSummary(): CloudIssuePage {
+    override fun waitForSummary(): AbstractIssuePage {
         val jiraErrors = JiraErrors(driver)
         driver.wait(
             or(

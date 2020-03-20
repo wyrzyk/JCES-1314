@@ -10,9 +10,12 @@ import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.Adaptiv
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveJqlMemory
 import com.atlassian.performance.tools.jiraactions.api.memories.adaptive.AdaptiveProjectMemory
 import com.atlassian.performance.tools.jiraactions.api.w3c.JavascriptW3cPerformanceTimeline
+import jces1209.vu.action.BrowsePopularFilters
 import jces1209.vu.action.WorkAnIssue
 import jces1209.vu.page.AbstractIssuePage
+import jces1209.vu.page.filters.FiltersPage
 import org.openqa.selenium.JavascriptExecutor
+import java.net.URI
 import java.util.Collections
 
 class ScenarioSimilarities(
@@ -25,9 +28,11 @@ class ScenarioSimilarities(
         .also { it.remember(listOf("order by created DESC")) } // work around https://ecosystem.atlassian.net/browse/JPERF-573
     val issueKeyMemory = AdaptiveIssueKeyMemory(seededRandom)
     val projectMemory = AdaptiveProjectMemory(seededRandom)
+    val filtersMemory = SeededMemory<URI>(seededRandom)
 
     fun assembleScenario(
         issuePage: AbstractIssuePage,
+        filtersPage: FiltersPage,
         createIssue: Action,
         searchWithJql: Action,
         browseProjects: Action,
@@ -57,6 +62,11 @@ class ScenarioSimilarities(
             meter = meter
         ),
         browseProjects = browseProjects,
+        browseFilters = BrowsePopularFilters(
+            filters = filtersMemory,
+            filtersPage = filtersPage,
+            meter = meter
+        ),
         browseBoards = browseBoards,
         viewBoard = viewBoard
     )
@@ -68,10 +78,11 @@ class ScenarioSimilarities(
         projectSummary: Action,
         viewDashboard: Action,
         browseProjects: Action,
+        browseFilters: Action,
         browseBoards: Action,
         viewBoard: Action
     ): List<Action> {
-        val exploreData = listOf(browseProjects, searchWithJql, browseBoards)
+        val exploreData = listOf(browseProjects, browseFilters, browseBoards)
         val spreadOut = mapOf(
             createIssue to 0, // 5 if we can mutate data
             searchWithJql to 20,

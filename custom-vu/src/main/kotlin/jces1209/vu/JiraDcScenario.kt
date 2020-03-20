@@ -4,7 +4,6 @@ import com.atlassian.performance.tools.jiraactions.api.SeededRandom
 import com.atlassian.performance.tools.jiraactions.api.WebJira
 import com.atlassian.performance.tools.jiraactions.api.action.Action
 import com.atlassian.performance.tools.jiraactions.api.action.BrowseProjectsAction
-import com.atlassian.performance.tools.jiraactions.api.action.SearchJqlAction
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
 import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.JiraCoreScenario
@@ -15,7 +14,9 @@ import com.atlassian.performance.tools.jirasoftwareactions.api.actions.ViewBoard
 import com.atlassian.performance.tools.jirasoftwareactions.api.boards.AgileBoard
 import com.atlassian.performance.tools.jirasoftwareactions.api.memories.AdaptiveBoardMemory
 import jces1209.vu.action.CreateAnIssue
+import jces1209.vu.action.SearchServerFilter
 import jces1209.vu.page.DcIssuePage
+import jces1209.vu.page.filters.ServerFiltersPage
 import org.openqa.selenium.By
 
 class JiraDcScenario : Scenario {
@@ -38,17 +39,17 @@ class JiraDcScenario : Scenario {
         val boardsMemory = AdaptiveBoardMemory<AgileBoard>(seededRandom)
         return similarities.assembleScenario(
             issuePage = DcIssuePage(jira.driver),
+            filtersPage = ServerFiltersPage(jira, jira.driver),
             createIssue = CreateAnIssue(
                 jira = jira,
                 meter = meter,
                 projectMemory = similarities.projectMemory,
                 createIssueButton = By.id("create_link")
             ),
-            searchWithJql = SearchJqlAction(
+            searchWithJql = SearchServerFilter(
                 jira = jira,
                 meter = meter,
-                jqlMemory = similarities.jqlMemory,
-                issueKeyMemory = similarities.issueKeyMemory
+                filters = similarities.filtersMemory
             ),
             browseProjects = BrowseProjectsAction(
                 jira = jira,

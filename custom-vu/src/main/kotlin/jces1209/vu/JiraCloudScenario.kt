@@ -10,10 +10,11 @@ import jces1209.vu.action.BrowseCloudBoards
 import jces1209.vu.action.BrowseCloudProjects
 import jces1209.vu.action.CreateAnIssue
 import jces1209.vu.action.LogInWithAtlassianId
-import jces1209.vu.action.SearchCloudJql
+import jces1209.vu.action.SearchCloudFilter
 import jces1209.vu.action.ViewCloudBoard
 import jces1209.vu.page.CloudIssuePage
 import jces1209.vu.page.boards.BoardPage
+import jces1209.vu.page.filters.CloudFiltersPage
 import org.openqa.selenium.By
 
 class JiraCloudScenario : Scenario {
@@ -38,17 +39,17 @@ class JiraCloudScenario : Scenario {
         val boardPages = SeededMemory<BoardPage>(seededRandom)
         return similarities.assembleScenario(
             issuePage = CloudIssuePage(jira.driver),
+            filtersPage = CloudFiltersPage(jira, jira.driver),
             createIssue = CreateAnIssue(
                 jira = jira,
                 meter = meter,
                 projectMemory = similarities.projectMemory,
                 createIssueButton = By.id("createGlobalItem")
             ),
-            searchWithJql = SearchCloudJql(
+            searchWithJql = SearchCloudFilter(
                 jira = jira,
                 meter = meter,
-                jqlMemory = similarities.jqlMemory,
-                issueKeyMemory = similarities.issueKeyMemory
+                filters = similarities.filtersMemory
             ),
             browseProjects = BrowseCloudProjects(
                 jira = jira,
