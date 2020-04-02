@@ -4,7 +4,8 @@ import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.api.result.RawCohortResult
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
 import com.atlassian.performance.tools.workspace.api.TaskWorkspace
-import extract.to.lib.jpt.report.reportByActionResult
+import extract.to.lib.jpt.report.Apdex
+import extract.to.lib.jpt.report.ApdexPerExperience
 import org.junit.Test
 import java.nio.file.Paths
 
@@ -19,8 +20,9 @@ class ExistingResultsIT {
         val betaProps = CohortProperties.load("b.properties")
         val alpha = processResults(alphaProps.cohort, taskWorkspace)
         val beta = processResults(betaProps.cohort, taskWorkspace)
+        val results = listOf(alpha, beta)
 
-        reportByActionResult(alpha, beta, taskWorkspace)
+        ApdexPerExperience(Apdex()).report(results, taskWorkspace)
     }
 
     private fun processResults(

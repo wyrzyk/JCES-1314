@@ -54,6 +54,7 @@ dependencies {
     testCompile("com.atlassian.performance.tools:report:[3.7.1,4.0.0)")
     testCompile("com.atlassian.performance.tools:concurrency:[1.0.0,2.0.0)")
     testCompile("io.github.bonigarcia:webdrivermanager:1.7.1")
+    testCompile("org.apache.commons:commons-csv:1.4")
     testCompile("junit:junit:4.12")
     testCompile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.70")
     val log4jVersion = "2.12.1"
