@@ -55,8 +55,7 @@ class JiraPerformanceComparisonIT {
         quality: BenchmarkQuality,
         pool: ExecutorService
     ): CompletableFuture<RawCohortResult> {
-        val secretsFile = File("cohort-secrets/").resolve(secretsName)
-        val properties = CohortProperties.load(secretsFile)
+        val properties = CohortProperties.load(secretsName)
         return pool.submitWithLogContext(properties.cohort) {
             benchmark(properties, scenario, quality)
         }

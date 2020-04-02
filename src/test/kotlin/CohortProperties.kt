@@ -9,7 +9,8 @@ class CohortProperties(
     val cohort: String
 ) {
     companion object {
-        fun load(secrets: File): CohortProperties {
+        fun load(secretsName: String): CohortProperties {
+            val secrets = File("cohort-secrets/").resolve(secretsName)
             val properties = Properties()
             secrets.bufferedReader().use { properties.load(it) }
             return CohortProperties(
