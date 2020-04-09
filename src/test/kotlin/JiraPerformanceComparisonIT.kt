@@ -15,10 +15,9 @@ import jces1209.BenchmarkQuality
 import jces1209.SlowAndMeaningful
 import jces1209.log.LogConfigurationFactory
 import jces1209.vu.JiraCloudScenario
-import jces1209.vu.JiraDcScenario
 import org.apache.logging.log4j.core.config.ConfigurationFactory
 import org.junit.Test
-import java.io.File
+import java.net.URI
 import java.nio.file.Paths
 import java.time.Duration
 import java.util.concurrent.CompletableFuture
@@ -28,7 +27,11 @@ import java.util.concurrent.Executors.newCachedThreadPool
 class JiraPerformanceComparisonIT {
 
     private val workspace = RootWorkspace(Paths.get("build")).currentTask
-    private val quality: BenchmarkQuality = SlowAndMeaningful.Builder().build()
+    private val quality: BenchmarkQuality = SlowAndMeaningful
+        .Builder()
+        .ramp(Duration.ofHours(5))
+        .flat(Duration.ofHours(5))
+        .build()
 
     init {
         ConfigurationFactory.setConfigurationFactory(LogConfigurationFactory(workspace))
@@ -38,9 +41,7 @@ class JiraPerformanceComparisonIT {
     fun shouldComparePerformance() {
         val results: List<EdibleResult> = AbruptExecutorService(newCachedThreadPool()).use { pool ->
             listOf(
-                benchmark("a.properties", JiraDcScenario::class.java, quality, pool),
-                benchmark("b.properties", JiraCloudScenario::class.java, quality, pool)
-                // feel free to add more, e.g. benchmark("c.properties", ...
+                benchmark(JiraCloudScenario::class.java, quality, pool)
             )
                 .map { it.get() }
                 .map { it.prepareForJudgement(FullTimeline()) }
@@ -50,24 +51,21 @@ class JiraPerformanceComparisonIT {
     }
 
     private fun benchmark(
-        secretsName: String,
         scenario: Class<out Scenario>,
         quality: BenchmarkQuality,
         pool: ExecutorService
     ): CompletableFuture<RawCohortResult> {
-        val properties = CohortProperties.load(secretsName)
-        return pool.submitWithLogContext(properties.cohort) {
-            benchmark(properties, scenario, quality)
+        return pool.submitWithLogContext("experiment") {
+            benchmark( scenario, quality)
         }
     }
 
     private fun benchmark(
-        properties: CohortProperties,
         scenario: Class<out Scenario>,
         quality: BenchmarkQuality
     ): RawCohortResult {
-        val options = loadOptions(properties, scenario)
-        val cohort = properties.cohort
+        val options = loadOptions(scenario)
+        val cohort = "experiment"
         val resultsTarget = workspace.directory.resolve("vu-results").resolve(cohort)
         val provisioned = quality
             .provide()
@@ -86,14 +84,14 @@ class JiraPerformanceComparisonIT {
     }
 
     private fun loadOptions(
-        properties: CohortProperties,
         scenario: Class<out Scenario>
     ): VirtualUserOptions {
         val target = VirtualUserTarget(
-            webApplication = properties.jira,
-            userName = properties.userName,
-            password = properties.userPassword
+            webApplication = URI(System.getenv("bamboo_JPT_JIRA_URI")!!),
+            userName = System.getenv("bamboo_JPT_USER_NAME")!!,
+            password = System.getenv("bamboo_JPT_USER_PASSWORD")!!
         )
+
         val behavior = quality.behave(scenario)
             .let { VirtualUserBehavior.Builder(it) }
             .build()
