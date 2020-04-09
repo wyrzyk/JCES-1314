@@ -1,9 +1,7 @@
 package jces1209.vu.page
 
-import com.atlassian.performance.tools.jiraactions.api.page.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
 import java.time.Duration
 
 class CloudBrowseBoardsPage(
@@ -13,11 +11,17 @@ class CloudBrowseBoardsPage(
         "[data-test-id='global-pages.directories.directory-base.content.table.container']"
     )
 
+    private val falliblePage = FalliblePage.Builder(
+        expectedContent = listOf(tableLocator),
+        webDriver = driver
+    )
+        .cloudErrors()
+        .timeout(Duration.ofSeconds(25))
+        .build()
+
     fun waitForBoards(): CloudBoardList {
-        val tableElement = driver.wait(
-            condition = visibilityOfElementLocated(tableLocator),
-            timeout = Duration.ofSeconds(25)
-        )
+        falliblePage.waitForPageToLoad()
+        val tableElement = driver.findElement(tableLocator)
         return CloudBoardList(tableElement, driver)
     }
 }

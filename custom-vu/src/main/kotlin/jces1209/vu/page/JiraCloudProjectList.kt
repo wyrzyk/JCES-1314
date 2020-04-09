@@ -1,12 +1,9 @@
 package jces1209.vu.page
 
 import com.atlassian.performance.tools.jiraactions.api.memories.Project
-import com.atlassian.performance.tools.jiraactions.api.page.wait
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
-import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
-import java.time.Duration
 
 class JiraCloudProjectList(
     private val driver: WebDriver
@@ -14,14 +11,15 @@ class JiraCloudProjectList(
     private val projectListSelector = By.cssSelector(
         "[data-test-id='global-pages.directories.directory-base.content.table.container']"
     )
+    private val falliblePage = FalliblePage.Builder(
+        expectedContent = listOf(projectListSelector),
+        webDriver = driver
+    )
+        .cloudErrors()
+        .build()
 
-    fun lookForProjects(
-        timeout: Duration
-    ): JiraCloudProjectList {
-        driver.wait(
-            condition = visibilityOfElementLocated(projectListSelector),
-            timeout = timeout
-        )
+    fun lookForProjects(): JiraCloudProjectList {
+        falliblePage.waitForPageToLoad()
         return this
     }
 

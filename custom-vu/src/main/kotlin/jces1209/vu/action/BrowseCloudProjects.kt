@@ -17,8 +17,7 @@ class BrowseCloudProjects(
     override fun run() {
         val projectList = meter.measure(BROWSE_PROJECTS) {
             jira.navigateTo("projects")
-            JiraCloudProjectList(jira.driver)
-                .lookForProjects(Duration.ofSeconds(10))
+            JiraCloudProjectList(jira.driver).lookForProjects()
         }
         projectMemory.remember(projectList.listProjects())
     }

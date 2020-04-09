@@ -56,6 +56,14 @@ class FalliblePage private constructor(
             )
         )
 
+        fun serverErrors() = potentialErrors(
+            listOf(
+                By.cssSelector("section div.aui-message.error"),
+                By.id("errorPageContainer"),
+                By.cssSelector("div.form-body div.error")
+            )
+        )
+
         fun build(): FalliblePage = FalliblePage(
             webDriver = webDriver,
             expectedContent = expectedContent,

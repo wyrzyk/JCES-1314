@@ -1,10 +1,9 @@
 package jces1209.vu.page.filters
 
 import com.atlassian.performance.tools.jiraactions.api.WebJira
-import jces1209.vu.wait
+import jces1209.vu.page.FalliblePage
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated
 
 class ServerFiltersPage(
     private val jira: WebJira,
@@ -12,6 +11,12 @@ class ServerFiltersPage(
 ) : FiltersPage {
 
     private val table = By.id("mf_popular")
+    private val falliblePage = FalliblePage.Builder(
+        expectedContent = listOf(table),
+        webDriver = driver
+    )
+        .serverErrors()
+        .build()
 
     override fun open(): FiltersPage {
         jira.navigateTo("secure/ManageFilters.jspa?filterView=popular")
@@ -19,7 +24,7 @@ class ServerFiltersPage(
     }
 
     override fun waitForList(): FiltersList {
-        val element = driver.wait(visibilityOfElementLocated(table))
-        return ServerFiltersList(element)
+        falliblePage.waitForPageToLoad()
+        return ServerFiltersList(driver.findElement(table))
     }
 }
