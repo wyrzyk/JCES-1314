@@ -30,6 +30,7 @@ class SlowAndMeaningful private constructor(
         )
         .skipSetup(true)
         .seed(12345L)
+        .logging(MutedVULoggerConfiguration::class.java)
         .build()
 
     class Builder {
