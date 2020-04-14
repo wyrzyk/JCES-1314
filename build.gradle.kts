@@ -49,6 +49,7 @@ dependencies {
     testCompile("com.atlassian.performance.tools:infrastructure:[4.15.0,5.0.0)")
     testCompile("com.atlassian.performance.tools:virtual-users:[3.10.0,4.0.0)")
     testCompile("com.atlassian.performance.tools:jira-software-actions:[1.3.2,2.0.0)")
+    testCompile("com.atlassian.performance.tools:jira-actions:[3.11.0,4.0.0)")
     testCompile("com.atlassian.performance.tools:aws-infrastructure:[2.14.0,3.0.0)")
     testCompile("com.atlassian.performance.tools:aws-resources:[1.3.4,2.0.0)")
     testCompile("com.atlassian.performance.tools:report:[3.7.1,4.0.0)")
@@ -57,6 +58,7 @@ dependencies {
     testCompile("org.apache.commons:commons-csv:1.4")
     testCompile("junit:junit:4.12")
     testCompile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.70")
+    testCompile("org.assertj:assertj-core:3.11.1")
     val log4jVersion = "2.12.1"
     testCompile("org.apache.logging.log4j:log4j-api:$log4jVersion")
     testCompile("org.apache.logging.log4j:log4j-core:$log4jVersion")

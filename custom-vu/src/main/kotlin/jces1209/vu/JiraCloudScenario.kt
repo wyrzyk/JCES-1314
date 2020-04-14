@@ -16,6 +16,7 @@ import jces1209.vu.page.CloudIssuePage
 import jces1209.vu.page.boards.BoardPage
 import jces1209.vu.page.filters.CloudFiltersPage
 import org.openqa.selenium.By
+import org.openqa.selenium.TakesScreenshot
 
 class JiraCloudScenario : Scenario {
 
@@ -33,8 +34,15 @@ class JiraCloudScenario : Scenario {
     override fun getActions(
         jira: WebJira,
         seededRandom: SeededRandom,
-        meter: ActionMeter
+        actionMeter: ActionMeter
     ): List<Action> {
+        val meter = ActionMeter.Builder(actionMeter)
+            .appendPostMetricHook(
+                TakeScreenshotHook.Builder(
+                    jira.driver as TakesScreenshot
+                ).build())
+            .build()
+
         val similarities = ScenarioSimilarities(jira, seededRandom, meter)
         val boardPages = SeededMemory<BoardPage>(seededRandom)
         return similarities.assembleScenario(

@@ -12,13 +12,16 @@ plugins {
 
 dependencies {
     implementation("com.atlassian.performance.tools:virtual-users:[3.10.0,4.0.0)")
-    implementation("com.atlassian.performance.tools:jira-actions:[3.10.1,4.0.0)")
+    implementation("com.atlassian.performance.tools:jira-actions:[3.11.0,4.0.0)")
     implementation("com.atlassian.performance.tools:jira-software-actions:[1.3.2,2.0.0)")
     implementation("org.seleniumhq.selenium:selenium-support:$seleniumVersion")
     implementation("org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion")
     implementation("org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion")
     implementation("org.glassfish:javax.json:1.1")
     implementation(kotlin("stdlib-jdk8"))
+
+    testCompile("junit:junit:4.12")
+    testCompile("org.assertj:assertj-core:3.11.1")
 }
 
 tasks.getByName("shadowJar", ShadowJar::class).apply {
