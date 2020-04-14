@@ -7,6 +7,7 @@ import com.atlassian.performance.tools.virtualusers.api.VirtualUserLoad
 import com.atlassian.performance.tools.virtualusers.api.browsers.Browser
 import com.atlassian.performance.tools.virtualusers.api.config.VirtualUserBehavior
 import jces1209.vu.EagerChromeBrowser
+import jces1209.vu.MutedVULoggerConfiguration
 import java.time.Duration
 
 class SlowAndMeaningful private constructor(

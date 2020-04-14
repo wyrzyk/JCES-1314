@@ -1,4 +1,4 @@
-package jces1209
+package jces1209.vu
 
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.core.config.DefaultConfiguration
