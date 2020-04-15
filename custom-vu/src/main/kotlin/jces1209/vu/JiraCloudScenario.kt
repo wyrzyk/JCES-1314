@@ -1,9 +1,11 @@
 package jces1209.vu
 
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.SeededRandom
 import com.atlassian.performance.tools.jiraactions.api.WebJira
 import com.atlassian.performance.tools.jiraactions.api.action.Action
 import com.atlassian.performance.tools.jiraactions.api.measure.ActionMeter
+import com.atlassian.performance.tools.jiraactions.api.measure.output.ActionMetricOutput
 import com.atlassian.performance.tools.jiraactions.api.memories.UserMemory
 import com.atlassian.performance.tools.jiraactions.api.scenario.Scenario
 import jces1209.vu.action.BrowseCloudBoards
@@ -16,6 +18,7 @@ import jces1209.vu.page.CloudIssuePage
 import jces1209.vu.page.boards.BoardPage
 import jces1209.vu.page.filters.CloudFiltersPage
 import org.openqa.selenium.By
+import java.util.*
 
 class JiraCloudScenario : Scenario {
 
@@ -33,8 +36,13 @@ class JiraCloudScenario : Scenario {
     override fun getActions(
         jira: WebJira,
         seededRandom: SeededRandom,
-        meter: ActionMeter
+        actionMeter: ActionMeter
     ): List<Action> {
+        val meter = ActionMeter
+            .Builder(actionMeter)
+            .overrideOutput { SkippingActionMetricOutput(50, it) }
+            .build()
+
         val similarities = ScenarioSimilarities(jira, seededRandom, meter)
         val boardPages = SeededMemory<BoardPage>(seededRandom)
         return similarities.assembleScenario(
@@ -68,5 +76,18 @@ class JiraCloudScenario : Scenario {
                 issueKeyMemory = similarities.issueKeyMemory
             )
         )
+    }
+
+    class SkippingActionMetricOutput(
+        private val skipProbability: Int,
+        private val delegate: ActionMetricOutput
+    ) : ActionMetricOutput {
+        private val random = Random()
+
+        override fun write(metric: ActionMetric) {
+            if (random.nextInt(101) > skipProbability) {
+                delegate.write(metric)
+            }
+        }
     }
 }
