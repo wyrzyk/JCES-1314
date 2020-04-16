@@ -40,7 +40,7 @@ class JiraCloudScenario : Scenario {
     ): List<Action> {
         val meter = ActionMeter
             .Builder(actionMeter)
-            .overrideOutput { SkippingActionMetricOutput(50, it) }
+            .overrideOutput { SkippingActionMetricOutput(75, it) }
             .build()
 
         val similarities = ScenarioSimilarities(jira, seededRandom, meter)
