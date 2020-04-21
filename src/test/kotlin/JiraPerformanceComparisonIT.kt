@@ -29,8 +29,8 @@ class JiraPerformanceComparisonIT {
     private val workspace = RootWorkspace(Paths.get("build")).currentTask
     private val quality: BenchmarkQuality = SlowAndMeaningful
         .Builder()
-        .ramp(Duration.ofHours(5))
-        .flat(Duration.ofHours(5))
+        .ramp(Duration.ofMinutes(150))
+        .flat(Duration.ofMinutes(150))
         .build()
 
     init {
