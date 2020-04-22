@@ -11,7 +11,7 @@ plugins {
 }
 
 dependencies {
-    implementation("com.atlassian.performance.tools:virtual-users:[3.10.0,4.0.0)")
+    implementation("com.atlassian.performance.tools:virtual-users:[3.11.1,4.0.0)")
     implementation("com.atlassian.performance.tools:jira-actions:[3.12.0,4.0.0)")
     implementation("com.atlassian.performance.tools:jira-software-actions:[1.3.2,2.0.0)")
     implementation("org.seleniumhq.selenium:selenium-support:$seleniumVersion")
